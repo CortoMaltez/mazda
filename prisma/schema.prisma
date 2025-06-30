@@ -1,9 +1,11 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -12,133 +14,439 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  password      String?
-  tier          String    @default("starter") // starter, growth, scale
-  statePreference String? // Delaware, Wyoming, Nevada, etc.
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(VISITOR)
+  phone     String?
+  country   String?
+  language  String   @default("en")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  companies     Company[]
-  subscriptions Subscription[]
-  payments      Payment[]
-  notifications Notification[]
-  userAddons    UserAddon[]
+  companies Company[]
+  payments  Payment[]
+  documents Document[]
+  consultations Consultation[]
+  supportTickets SupportTicket[]
+  llcFormationWorkflows LLCFormationWorkflow[]
+  aiAnalyses AIAnalysis[]
   
+  // Account Manager relations
+  managedCompanies Company[] @relation("AccountManager")
+
+  // Consultant permissions
+  consultantPermissions ConsultantPermission[] @relation("ConsultantPermissions")
+  grantedPermissions ConsultantPermission[] @relation("AdminGrantedPermissions")
+
   @@map("users")
 }
 
 model Company {
-  id            String    @id @default(cuid())
-  name          String
-  state         String    // Delaware, Wyoming, Nevada, etc.
+  id          String   @id @default(cuid())
+  name        String
+  state       String
+  businessType String
   formationDate DateTime?
-  status        String    @default("pending") // pending, active, suspended
-  ein           String?   // Employer Identification Number
-  userId        String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  status      CompanyStatus @default(PENDING)
+  subscriptionType SubscriptionType @default(ANNUAL)
+  subscriptionStartDate DateTime?
+  subscriptionEndDate DateTime?
   
+  // Formation details
+  ein         String?  // EIN number
+  operatingAgreement Boolean @default(false)
+  bankAccountAssistance Boolean @default(false)
+  
+  // Compliance status
+  registeredAgent Boolean @default(false)
+  businessAddress String?
+  mailScanning Boolean @default(false)
+  annualReportFiled Boolean @default(false)
+  annualReportDueDate DateTime?
+  boiReportFiled Boolean @default(false)
+  boiReportDueDate DateTime?
+  
+  // Tax compliance
+  form5472Filed Boolean @default(false)
+  form5472DueDate DateTime?
+  form1120Filed Boolean @default(false)
+  form1120DueDate DateTime?
+  
+  // Additional services
+  itinAssistance Boolean @default(false)
+  premiumBankAssistance Boolean @default(false)
+  trademarkFiling Boolean @default(false)
+  
+  userId      String
+  accountManagerId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   // Relations
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  documents     Document[]
-  
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountManager User?  @relation("AccountManager", fields: [accountManagerId], references: [id])
+  documents  Document[]
+  payments   Payment[]
+  mailItems  MailItem[]
+  supportTickets SupportTicket[]
+
   @@map("companies")
 }
 
-model Subscription {
-  id        String   @id @default(cuid())
-  tier      String   // starter, growth, scale
-  startDate DateTime @default(now())
-  endDate   DateTime
-  status    String   @default("active") // active, cancelled, expired
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("subscriptions")
-}
-
-model Payment {
-  id        String   @id @default(cuid())
-  amount    Float
-  currency  String   @default("USD")
-  status    String   @default("pending") // pending, completed, failed, refunded
-  stripeId  String?  // Stripe payment intent ID
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("payments")
-}
-
 model Document {
-  id         String   @id @default(cuid())
-  type       String   // llc_formation, ein_letter, operating_agreement, etc.
-  url        String
-  status     String   @default("pending") // pending, generated, delivered
-  companyId  String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  
+  id        String   @id @default(cuid())
+  name      String
+  type      DocumentType
+  fileUrl   String
+  fileSize  Int
+  description String?
+  isRequired Boolean @default(false)
+  dueDate   DateTime?
+  userId    String
+  companyId String?
+  uploadedBy String? // admin user ID
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
   @@map("documents")
 }
 
-model Notification {
-  id        String   @id @default(cuid())
-  type      String   // deadline_reminder, document_ready, payment_due, etc.
-  message   String
-  read      Boolean  @default(false)
-  userId    String
-  createdAt DateTime @default(now())
-  
+model Payment {
+  id            String        @id @default(cuid())
+  amount        Float
+  currency      String        @default("USD")
+  status        PaymentStatus @default(PENDING)
+  type          PaymentType   @default(SUBSCRIPTION)
+  stripePaymentId String?
+  stripeInvoiceId String?
+  description   String?
+  userId        String
+  companyId     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
   // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("notifications")
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
 }
 
-model AddonModule {
+model MailItem {
   id          String   @id @default(cuid())
-  name        String   // banking_pro, tax_optimization, compliance_plus, etc.
-  price       Float
-  description String
-  active      Boolean  @default(true)
+  subject     String?
+  sender      String
+  receivedDate DateTime
+  scanned     Boolean  @default(false)
+  scannedUrl  String?
+  action      MailAction @default(PENDING)
+  notes       String?
+  companyId   String
+  processedBy String? // admin user ID
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Relations
-  userAddons  UserAddon[]
-  
-  @@map("addon_modules")
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("mail_items")
 }
 
-model UserAddon {
-  id           String      @id @default(cuid())
-  userId       String
-  addonId      String
-  startDate    DateTime    @default(now())
-  endDate      DateTime
-  status       String      @default("active") // active, cancelled, expired
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  
+model Consultation {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Float
+  currency    String   @default("USD")
+  status      ConsultationStatus @default(PENDING)
+  calendlyUrl String?
+  notes       String?
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   // Relations
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  addon        AddonModule @relation(fields: [addonId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, addonId])
-  @@map("user_addons")
-} 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("consultations")
+}
+
+model SupportTicket {
+  id          String   @id @default(cuid())
+  subject     String
+  message     String
+  priority    TicketPriority @default(MEDIUM)
+  status      TicketStatus @default(OPEN)
+  userId      String
+  companyId   String?
+  assignedTo  String? // admin user ID
+  resolvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("support_tickets")
+}
+
+model LLCFormationWorkflow {
+  id                    String   @id @default(cuid())
+  clientId              String
+  planId                String
+  status                String   @default("pending") // pending, in_progress, completed, failed
+  steps                 String   // JSON array of workflow steps
+  totalEstimatedTime    Int      // in minutes
+  actualTime            Int?     // in minutes
+  startedAt             DateTime @default(now())
+  completedAt           DateTime?
+  data                  String   // JSON object with formation data
+  documents             String   // JSON array of document URLs
+  ein                   String?
+  bankAccount           String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("llc_formation_workflows")
+}
+
+model AIAnalysis {
+  id          String   @id @default(cuid())
+  serviceId   String
+  userId      String
+  input       String   // JSON object with input data
+  output      String   // AI generated response
+  cost        Float    @default(0)
+  tokensUsed  Int      @default(0)
+  status      String   @default("pending") // pending, completed, failed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_analyses")
+}
+
+model ConsultantPermission {
+  id          String   @id @default(cuid())
+  consultantId String
+  grantedBy   String   // admin user ID
+  permission  String   // e.g., "dashboard", "admin", "ai", "users", "companies"
+  canRead     Boolean  @default(false)
+  canWrite    Boolean  @default(false)
+  canDelete   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  consultant User @relation("ConsultantPermissions", fields: [consultantId], references: [id], onDelete: Cascade)
+  admin      User @relation("AdminGrantedPermissions", fields: [grantedBy], references: [id], onDelete: Cascade)
+
+  @@map("consultant_permissions")
+}
+
+// MIVION - Intelligence Concurrentielle
+model Competitor {
+  id                String   @id @default(cuid())
+  name              String
+  website           String
+  lastUpdated       DateTime @default(now())
+  pricingData       String?  // JSON des prix par état
+  servicesData      String?  // JSON des services
+  adsData           String?  // JSON des campagnes pub
+  marketPositionData String? // JSON position marché
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("competitors")
+}
+
+model CompetitiveInsight {
+  id            String   @id @default(cuid())
+  type          String   // 'pricing', 'service', 'marketing', 'threat', 'opportunity'
+  severity      String   // 'low', 'medium', 'high', 'critical'
+  description   String
+  impact        String
+  recommendation String
+  estimatedValue Float
+  createdAt     DateTime @default(now())
+
+  @@map("competitive_insights")
+}
+
+// TRACKING FINANCIER & ROI
+model AdCampaign {
+  id              String   @id @default(cuid())
+  platform        String   // 'facebook', 'google', 'linkedin'
+  name            String
+  budget          Float
+  spent           Float    @default(0)
+  impressions     Int      @default(0)
+  clicks          Int      @default(0)
+  conversions     Int      @default(0)
+  revenue         Float    @default(0)
+  roi             Float    @default(0)
+  status          String   @default("active") // 'active', 'paused', 'completed'
+  startDate       DateTime @default(now())
+  endDate         DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("ad_campaigns")
+}
+
+model FinancialMetric {
+  id              String   @id @default(cuid())
+  date            DateTime @default(now())
+  revenue         Float    @default(0)
+  expenses        Float    @default(0)
+  profit          Float    @default(0)
+  adSpend         Float    @default(0)
+  customerAcquisitionCost Float @default(0)
+  lifetimeValue   Float    @default(0)
+  conversionRate  Float    @default(0)
+  roi             Float    @default(0)
+  createdAt       DateTime @default(now())
+
+  @@map("financial_metrics")
+}
+
+model PricingRecommendation {
+  id              String   @id @default(cuid())
+  state           String
+  currentPrice    Float
+  recommendedPrice Float
+  competitorPrices String  // JSON array
+  potentialProfit Float
+  confidence      Float
+  reasoning       String
+  approved        Boolean  @default(false)
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdAt       DateTime @default(now())
+
+  @@map("pricing_recommendations")
+}
+
+// IA & AUTOMATION
+model AIRecommendation {
+  id              String   @id @default(cuid())
+  type            String   // 'pricing', 'marketing', 'service', 'budget'
+  title           String
+  description     String
+  impact          String
+  recommendation  String
+  estimatedValue  Float
+  approved        Boolean  @default(false)
+  approvedBy      String?
+  approvedAt      DateTime?
+  implemented     Boolean  @default(false)
+  implementedAt   DateTime?
+  createdAt       DateTime @default(now())
+
+  @@map("ai_recommendations")
+}
+
+model AICostTracking {
+  id              String   @id @default(cuid())
+  date            DateTime @default(now())
+  tokensUsed      Int      @default(0)
+  imagesGenerated Int      @default(0)
+  videosGenerated Int      @default(0)
+  cost            Float    @default(0)
+  service         String   // 'gemini', 'image-generation', 'video-generation'
+  createdAt       DateTime @default(now())
+
+  @@map("ai_cost_tracking")
+}
+
+enum UserRole {
+  VISITOR
+  CLIENT
+  CONSULTANT
+  ADMIN
+}
+
+enum CompanyStatus {
+  PENDING
+  FORMING
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+  DISSOLVED
+}
+
+enum SubscriptionType {
+  ANNUAL
+  MONTHLY
+  CUSTOM
+}
+
+enum DocumentType {
+  FORMATION_DOCUMENT
+  OPERATING_AGREEMENT
+  EIN_CERTIFICATE
+  ANNUAL_REPORT
+  TAX_DOCUMENT
+  BOI_REPORT
+  LEGAL_DOCUMENT
+  BANK_DOCUMENT
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentType {
+  SUBSCRIPTION
+  CONSULTATION
+  ADDON_SERVICE
+  REFUND
+}
+
+enum MailAction {
+  PENDING
+  FORWARD
+  SCAN
+  DESTROY
+  ARCHIVE
+}
+
+enum ConsultationStatus {
+  PENDING
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_FOR_CLIENT
+  RESOLVED
+  CLOSED
+}

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
   try {
     const { name, email, password } = await request.json();
 
-    // Validation des données
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Tous les champs sont requis" },
@@ -14,16 +13,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: "Le mot de passe doit contenir au moins 6 caractères" },
-        { status: 400 }
-      );
-    }
-
     // Vérifier si l'utilisateur existe déjà
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email }
     });
 
     if (existingUser) {
@@ -43,19 +35,22 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
     });
-
-    // Retourner l'utilisateur sans le mot de passe
-    const { password: _, ...userWithoutPassword } = user;
 
     return NextResponse.json(
       { 
         message: "Utilisateur créé avec succès",
-        user: userWithoutPassword 
+        user 
       },
       { status: 201 }
     );
-
   } catch (error) {
     console.error("Erreur lors de l'inscription:", error);
     return NextResponse.json(

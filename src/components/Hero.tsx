@@ -1,90 +1,95 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ArrowRight, CheckCircle, Star, Users, Zap, Globe, Building2 } from 'lucide-react'
 import Link from 'next/link'
 
-export default function Hero() {
+export function Hero() {
   return (
-    <div className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:20px_20px]"></div>
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 sm:pt-32 sm:pb-24">
-        <div className="text-center">
-          {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-            Formez votre entreprise LLC en toute simplicité
-          </h1>
+      {/* Floating Elements */}
+      <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+      
+      <div className="relative z-10 container mx-auto px-4 text-center">
+        {/* Badge */}
+        <Badge variant="secondary" className="mb-6 bg-blue-100 text-blue-800 border-blue-200">
+          <Zap className="w-4 h-4 mr-2" />
+          Formation LLC en 12h avec IA
+        </Badge>
 
-          {/* Subtitle */}
-          <p className="text-xl sm:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
-            ProsperaLink vous accompagne dans la création de votre entreprise aux États-Unis. 
-            Processus 100% en ligne, support expert et garantie de satisfaction.
-          </p>
+        {/* Main Heading */}
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+          Formation d'entreprises
+          <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            LLC aux États-Unis
+          </span>
+        </h1>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Link href="/auth/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg">
-                Commencer maintenant
-              </Button>
-            </Link>
-            <Link href="/dashboard/calculator">
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg">
-                Calculer les prix
-              </Button>
-            </Link>
+        {/* Subtitle */}
+        <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          Service premium pour entrepreneurs internationaux. Formation rapide, 
+          support IA 24/7, conformité garantie. Simplifiez votre expansion américaine.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
+            Commencer maintenant
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-900 px-8 py-4 text-lg">
+            Voir les prix
+          </Button>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="flex flex-wrap justify-center items-center gap-8 text-gray-400 mb-8">
+          <div className="flex items-center space-x-2">
+            <CheckCircle className="w-5 h-5 text-green-400" />
+            <span>Formation en 12h</span>
           </div>
-
-          {/* Trust Indicators */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-200 mb-2">500+</div>
-              <div className="text-blue-100">Entreprises formées</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-200 mb-2">24h</div>
-              <div className="text-blue-100">Délai de traitement</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-200 mb-2">99%</div>
-              <div className="text-blue-100">Taux de satisfaction</div>
-            </div>
+          <div className="flex items-center space-x-2">
+            <Globe className="w-5 h-5 text-blue-400" />
+            <span>Support international</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Building2 className="w-5 h-5 text-purple-400" />
+            <span>Conformité garantie</span>
           </div>
         </div>
 
-        {/* Hero Image/Visual */}
-        <div className="mt-20 flex justify-center">
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-r from-blue-600/20 to-indigo-600/20 blur-2xl"></div>
-            <div className="relative rounded-2xl bg-white/80 p-8 shadow-2xl backdrop-blur-sm">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div className="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-                  <h3 className="font-semibold text-gray-900">LLC Formation</h3>
-                  <p className="mt-2 text-sm text-gray-600">Création rapide et sécurisée</p>
-                </div>
-                <div className="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-6">
-                  <h3 className="font-semibold text-gray-900">Banking</h3>
-                  <p className="mt-2 text-sm text-gray-600">Compte bancaire américain</p>
-                </div>
-                <div className="rounded-lg bg-gradient-to-br from-purple-50 to-violet-50 p-6">
-                  <h3 className="font-semibold text-gray-900">Compliance</h3>
-                  <p className="mt-2 text-sm text-gray-600">Gestion automatisée</p>
-                </div>
-              </div>
+        {/* Social Proof */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-gray-400">
+          <div className="flex items-center space-x-2">
+            <div className="flex -space-x-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full border-2 border-slate-900"></div>
+              ))}
             </div>
+            <span>500+ entrepreneurs satisfaits</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+              ))}
+            </div>
+            <span>4.9/5 étoiles</span>
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
           <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
-    </div>
+    </section>
   )
 } 

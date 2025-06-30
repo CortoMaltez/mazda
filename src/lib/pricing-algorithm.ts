@@ -1,149 +1,138 @@
-// États populaires avec leurs facteurs de prix
-export const stateFactors = {
-  'Delaware': 1.0,    // État de référence
-  'Wyoming': 0.9,     // Moins cher
-  'Nevada': 1.1,      // Plus cher
-  'Florida': 1.0,     // Standard
-  'Texas': 0.95,      // Légèrement moins cher
-  'California': 1.2,  // Plus cher
-  'New York': 1.15,   // Plus cher
-  'Arizona': 0.95,    // Légèrement moins cher
-  'Colorado': 1.05,   // Légèrement plus cher
-  'Utah': 0.9         // Moins cher
+// Pricing Algorithm for ProsperaLink 360 Subscription
+// Based on the business plan: Annual Price = Annual Recurring Costs + $500 Target Profit
+
+export interface StatePricing {
+  state: string;
+  annualPrice: number;
+  stateAnnualReportFee: number;
+  registeredAgentFee: number;
+  irsFilingCost: number;
+  totalRecurringCosts: number;
+  targetProfit: number;
 }
 
-// Tiers de service avec prix de base
-export const pricingTiers = {
-  starter: {
-    name: 'Starter',
-    basePrice: 497,
-    description: 'Pour entrepreneurs débutants, test de marché',
+export const STATE_PRICING_DATA: StatePricing[] = [
+  { state: "Alabama", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Alaska", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Arizona", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Arkansas", annualPrice: 849, stateAnnualReportFee: 150, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 349, targetProfit: 500 },
+  { state: "California", annualPrice: 1519, stateAnnualReportFee: 800, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 999, targetProfit: 520 },
+  { state: "Colorado", annualPrice: 709, stateAnnualReportFee: 10, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 209, targetProfit: 500 },
+  { state: "Connecticut", annualPrice: 779, stateAnnualReportFee: 80, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 279, targetProfit: 500 },
+  { state: "Delaware", annualPrice: 999, stateAnnualReportFee: 300, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 499, targetProfit: 500 },
+  { state: "Florida", annualPrice: 838, stateAnnualReportFee: 139, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 338, targetProfit: 500 },
+  { state: "Georgia", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Hawaii", annualPrice: 714, stateAnnualReportFee: 15, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 214, targetProfit: 500 },
+  { state: "Idaho", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Illinois", annualPrice: 774, stateAnnualReportFee: 75, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 274, targetProfit: 500 },
+  { state: "Indiana", annualPrice: 714, stateAnnualReportFee: 15, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 214, targetProfit: 500 },
+  { state: "Iowa", annualPrice: 714, stateAnnualReportFee: 15, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 214, targetProfit: 500 },
+  { state: "Kansas", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Kentucky", annualPrice: 714, stateAnnualReportFee: 15, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 214, targetProfit: 500 },
+  { state: "Louisiana", annualPrice: 734, stateAnnualReportFee: 35, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 234, targetProfit: 500 },
+  { state: "Maine", annualPrice: 784, stateAnnualReportFee: 85, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 284, targetProfit: 500 },
+  { state: "Maryland", annualPrice: 999, stateAnnualReportFee: 300, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 499, targetProfit: 500 },
+  { state: "Massachusetts", annualPrice: 1199, stateAnnualReportFee: 500, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 699, targetProfit: 500 },
+  { state: "Michigan", annualPrice: 724, stateAnnualReportFee: 25, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 224, targetProfit: 500 },
+  { state: "Minnesota", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Mississippi", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Missouri", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Montana", annualPrice: 719, stateAnnualReportFee: 20, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 219, targetProfit: 500 },
+  { state: "Nebraska", annualPrice: 706, stateAnnualReportFee: 7, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 206, targetProfit: 500 },
+  { state: "Nevada", annualPrice: 1049, stateAnnualReportFee: 350, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 549, targetProfit: 500 },
+  { state: "New Hampshire", annualPrice: 799, stateAnnualReportFee: 100, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 299, targetProfit: 500 },
+  { state: "New Jersey", annualPrice: 774, stateAnnualReportFee: 75, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 274, targetProfit: 500 },
+  { state: "New Mexico", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "New York", annualPrice: 704, stateAnnualReportFee: 4, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 203, targetProfit: 501 },
+  { state: "North Carolina", annualPrice: 899, stateAnnualReportFee: 200, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 399, targetProfit: 500 },
+  { state: "North Dakota", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Ohio", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Oklahoma", annualPrice: 724, stateAnnualReportFee: 25, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 224, targetProfit: 500 },
+  { state: "Oregon", annualPrice: 799, stateAnnualReportFee: 100, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 299, targetProfit: 500 },
+  { state: "Pennsylvania", annualPrice: 706, stateAnnualReportFee: 7, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 206, targetProfit: 500 },
+  { state: "Rhode Island", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "South Carolina", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "South Dakota", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Tennessee", annualPrice: 999, stateAnnualReportFee: 300, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 499, targetProfit: 500 },
+  { state: "Texas", annualPrice: 699, stateAnnualReportFee: 0, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 199, targetProfit: 500 },
+  { state: "Utah", annualPrice: 717, stateAnnualReportFee: 18, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 217, targetProfit: 500 },
+  { state: "Vermont", annualPrice: 744, stateAnnualReportFee: 45, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 244, targetProfit: 500 },
+  { state: "Virginia", annualPrice: 749, stateAnnualReportFee: 50, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 249, targetProfit: 500 },
+  { state: "Washington", annualPrice: 759, stateAnnualReportFee: 60, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 259, targetProfit: 500 },
+  { state: "West Virginia", annualPrice: 724, stateAnnualReportFee: 25, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 224, targetProfit: 500 },
+  { state: "Wisconsin", annualPrice: 724, stateAnnualReportFee: 25, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 224, targetProfit: 500 },
+  { state: "Wyoming", annualPrice: 759, stateAnnualReportFee: 60, registeredAgentFee: 49, irsFilingCost: 150, totalRecurringCosts: 259, targetProfit: 500 },
+];
+
+// Pricing tiers for marketing simplification
+export const PRICING_TIERS = {
+  ESSENTIAL: {
+    name: "Essential",
+    priceRange: "$699 - $799",
+    states: STATE_PRICING_DATA.filter(p => p.annualPrice >= 699 && p.annualPrice <= 799),
     features: [
-      'Formation LLC (tous États)',
-      'Agent agréé (1 an)',
-      'EIN gratuit',
-      'Déclaration IRS 5472',
-      'Portail client basique',
-      'Support email'
+      "LLC Formation",
+      "EIN Acquisition",
+      "Operating Agreement",
+      "Registered Agent Service",
+      "Annual Report Filing",
+      "BOI Report Filing",
+      "Form 5472 & 1120 Filing",
+      "48-hour Support Response"
     ]
   },
-  growth: {
-    name: 'Growth',
-    basePrice: 997,
-    description: 'Pour entrepreneurs en croissance',
+  GROWTH: {
+    name: "Growth",
+    priceRange: "$800 - $999",
+    states: STATE_PRICING_DATA.filter(p => p.annualPrice >= 800 && p.annualPrice <= 999),
     features: [
-      'Tout du Starter',
-      'Compte bancaire business (Stripe Atlas)',
-      'Déclaration fiscale complète',
-      'Gestion des rapports annuels',
-      'Support prioritaire',
-      'Dashboard avancé',
-      'Notifications automatiques'
+      "Everything in Essential",
+      "Premium Business Address",
+      "Mail Scanning Service",
+      "Bank Account Assistance",
+      "Priority Support"
     ]
   },
-  scale: {
-    name: 'Scale',
-    basePrice: 1997,
-    description: 'Pour entrepreneurs établis',
+  PREMIUM: {
+    name: "Premium",
+    priceRange: "$1000+",
+    states: STATE_PRICING_DATA.filter(p => p.annualPrice >= 1000),
     features: [
-      'Tout du Growth',
-      'Services comptables complets',
-      'Optimisation fiscale',
-      'Support dédié',
-      'API d\'intégration',
-      'Formation équipe',
-      'Conseil stratégique'
+      "Everything in Growth",
+      "Dedicated Account Manager",
+      "ITIN Application Assistance",
+      "Premium Bank Assistance",
+      "Trademark Filing Support",
+      "24-hour Support Response"
     ]
   }
+};
+
+// Functions
+export function getStatePricing(stateName: string): StatePricing | null {
+  return STATE_PRICING_DATA.find(p => 
+    p.state.toLowerCase() === stateName.toLowerCase()
+  ) || null;
 }
 
-// Modules complémentaires
-export const addonModules = {
-  'banking-pro': {
-    name: 'Banking Pro',
-    price: 297,
-    description: 'Compte bancaire premium + cartes'
-  },
-  'tax-optimization': {
-    name: 'Tax Optimization',
-    price: 497,
-    description: 'Optimisation fiscale avancée'
-  },
-  'compliance-plus': {
-    name: 'Compliance Plus',
-    price: 197,
-    description: 'Surveillance réglementaire'
-  },
-  'growth-tools': {
-    name: 'Growth Tools',
-    price: 397,
-    description: 'Outils marketing + analytics'
-  },
-  'legal-shield': {
-    name: 'Legal Shield',
-    price: 597,
-    description: 'Protection juridique'
-  }
+export function calculateSubscriptionPrice(stateName: string): number {
+  const pricing = getStatePricing(stateName);
+  return pricing ? pricing.annualPrice : 699; // Default to lowest price
 }
 
-// Fonction de calcul du prix de base
-export function calculateBasePrice(tier: keyof typeof pricingTiers, state: string): number {
-  const tierData = pricingTiers[tier]
-  const stateFactor = stateFactors[state as keyof typeof stateFactors] || 1.0
+export function getPricingTier(stateName: string) {
+  const pricing = getStatePricing(stateName);
+  if (!pricing) return PRICING_TIERS.ESSENTIAL;
   
-  return Math.round(tierData.basePrice * stateFactor)
+  if (pricing.annualPrice >= 1000) return PRICING_TIERS.PREMIUM;
+  if (pricing.annualPrice >= 800) return PRICING_TIERS.GROWTH;
+  return PRICING_TIERS.ESSENTIAL;
 }
 
-// Fonction de calcul du prix des addons
-export function calculateAddonPrice(selectedAddons: string[]): number {
-  return selectedAddons.reduce((total, addonId) => {
-    const addon = addonModules[addonId as keyof typeof addonModules]
-    return total + (addon?.price || 0)
-  }, 0)
+export function getAllStates(): string[] {
+  return STATE_PRICING_DATA.map(p => p.state).sort();
 }
 
-// Fonction de calcul du prix total
-export function calculateTotalPrice(
-  tier: keyof typeof pricingTiers, 
-  state: string, 
-  selectedAddons: string[]
-): number {
-  const basePrice = calculateBasePrice(tier, state)
-  const addonPrice = calculateAddonPrice(selectedAddons)
-  
-  return basePrice + addonPrice
-}
-
-// Fonction de calcul des réductions
-export function calculateDiscount(totalPrice: number): { discount: number; percentage: number } {
-  if (totalPrice >= 800) {
-    return { discount: totalPrice * 0.20, percentage: 20 }
-  } else if (totalPrice >= 600) {
-    return { discount: totalPrice * 0.15, percentage: 15 }
-  } else if (totalPrice >= 400) {
-    return { discount: totalPrice * 0.10, percentage: 10 }
-  }
-  
-  return { discount: 0, percentage: 0 }
-}
-
-// Fonction de calcul du prix final avec réductions
-export function calculateFinalPrice(
-  tier: keyof typeof pricingTiers, 
-  state: string, 
-  selectedAddons: string[]
-): { basePrice: number; addonPrice: number; totalBeforeDiscount: number; discount: number; finalPrice: number } {
-  const basePrice = calculateBasePrice(tier, state)
-  const addonPrice = calculateAddonPrice(selectedAddons)
-  const totalBeforeDiscount = basePrice + addonPrice
-  const { discount } = calculateDiscount(totalBeforeDiscount)
-  const finalPrice = totalBeforeDiscount - discount
-  
-  return {
-    basePrice,
-    addonPrice,
-    totalBeforeDiscount,
-    discount,
-    finalPrice: Math.round(finalPrice)
-  }
+export function getStatesByTier(tier: keyof typeof PRICING_TIERS): string[] {
+  return PRICING_TIERS[tier].states.map(p => p.state).sort();
 } 

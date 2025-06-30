@@ -1,234 +1,163 @@
-# ProsperaLink - Growth-as-a-Service
+# 🚀 ProsperaLink - Plateforme de Formation LLC avec IA
 
-Votre écosystème de croissance américain. De la création d'entreprise à l'expansion mondiale, tout-en-un.
+**ProsperaLink** est une plateforme révolutionnaire de formation d'entreprises LLC aux États-Unis, intégrant une IA avancée (Gemini) pour automatiser et optimiser tous les aspects du business.
 
-## 🚀 Vision Stratégique
+## 🎯 Objectifs Business
 
-ProsperaLink transforme la complexité administrative en avantage concurrentiel. Notre plateforme **Growth-as-a-Service** offre :
+- **ROI attendu**: 660%
+- **Budget IA optimisé**: 15,000$/an
+- **Taux de conversion**: >25%
+- **Satisfaction client**: >95%
 
-- **Formation LLC** : Création rapide et sécurisée
-- **Banking US** : Compte bancaire américain intégré
-- **Compliance** : Gestion automatisée de la conformité
-- **Growth Tools** : Outils d'expansion internationale
+## 🏗️ Architecture Technique
 
-## 🛠️ Stack Technique
+### Stack Technologique
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Base de données**: SQLite (développement) / MySQL (production)
+- **Authentification**: NextAuth.js
+- **Paiements**: Stripe
+- **IA**: Google Gemini API
+- **Déploiement**: Vercel
 
-- **Framework** : Next.js 15 avec App Router
-- **Langage** : TypeScript
-- **Styling** : Tailwind CSS + shadcn/ui
-- **Composants** : Radix UI
-- **Icons** : Lucide React
-- **Base de données** : Prisma + SQLite
-- **Authentification** : NextAuth.js
-- **Paiements** : Stripe
-- **Déploiement** : Vercel (recommandé)
+### Structure des Niveaux d'Accès
+1. **VISITOR** (0) - Accès public, consultation
+2. **CLIENT** (1) - Dashboard, calculateur, services de base
+3. **CONSULTANT** (2) - Permissions granulaires accordées par admin
+4. **ADMIN** (3) - Accès complet, gestion des utilisateurs et permissions
 
-## 📦 Installation
+## 🚀 Démarrage Rapide
 
-### 1. Cloner le repository
+### Prérequis
+- Node.js 18+
+- npm ou yarn
+- Compte Google Cloud (pour Gemini API)
+- Compte Stripe
+
+### Installation
+
+1. **Cloner le projet**
 ```bash
-git clone [repository-url]
-cd prosperalink-rebuilt
+git clone <repository-url>
+cd mazda
 ```
 
-### 2. Installer les dépendances
+2. **Installer les dépendances**
 ```bash
 npm install
 ```
 
-### 3. Configuration de l'environnement
-Créer un fichier `.env.local` dans le répertoire racine :
-
-```env
-# Database (SQLite for development)
-DATABASE_URL="file:./dev.db"
-
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-nextauth-secret-key-change-this-in-production"
-
-# Stripe (get from https://dashboard.stripe.com/test/apikeys)
-STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
-STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key"
-
-# Email (optional - get from https://resend.com)
-RESEND_API_KEY="your_resend_api_key"
-```
-
-### 4. Générer la clé NextAuth
+3. **Configuration des variables d'environnement**
 ```bash
-openssl rand -base64 32
+cp env.example .env.local
 ```
-Copier la sortie et remplacer `your-nextauth-secret-key-change-this-in-production` dans `.env.local`
 
-### 5. Obtenir les clés Stripe (Gratuit)
-1. Aller sur https://dashboard.stripe.com/test/apikeys
-2. Copier votre "Secret key" et "Publishable key"
-3. Remplacer les valeurs dans `.env.local`
+Remplir les variables dans `.env.local` :
+```env
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+GOOGLE_GEMINI_API_KEY="your-gemini-api-key"
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
+```
 
-### 6. Initialiser la base de données
+4. **Configuration de la base de données**
 ```bash
 npx prisma generate
 npx prisma db push
+npx prisma db seed
 ```
 
-### 7. Démarrer l'application
+5. **Lancer le serveur de développement**
 ```bash
 npm run dev
 ```
 
-L'application sera disponible sur `http://localhost:3000`
+L'application sera accessible sur [http://localhost:3000](http://localhost:3000)
 
-## 🏗️ Architecture
+> **Note :** Par défaut, l'application démarre sur le port 3000. Si ce port est occupé, Next.js utilisera automatiquement le port 3001. Adaptez vos tests et accès en conséquence.
 
+## 🤖 Services IA Intégrés
+
+- **Assistant IA Avancé** - Recommandations personnalisées
+- **Générateur de Contenu IA** - Posts réseaux sociaux, articles
+- **Bot WhatsApp IA** - Réponses automatiques, qualification leads
+- **Analyse Prédictive IA** - Prévisions de ventes, analyse marché
+- **Optimiseur de Conversion IA** - A/B Testing automatique
+- **Conseiller IA de Tarification** - Recommandations de prix
+
+## 📊 Fonctionnalités Principales
+
+- ✅ Page d'accueil moderne avec CTA
+- ✅ Système d'authentification sécurisé
+- ✅ Dashboard client avec calculateur de prix
+- ✅ Panneau d'administration complet
+- ✅ Espace consultant avec permissions granulaires
+- ✅ API routes complètes
+- ✅ Intégration Stripe pour les paiements
+- ✅ Workflow de formation LLC automatisé
+- ✅ Gestionnaire de coûts IA
+- ✅ Analytics et reporting
+- ✅ Tests automatisés
+
+## 🔧 Scripts Utilitaires
+
+```bash
+# Vérifier le progrès du projet
+npm run progress
+
+# Mettre à jour la roadmap
+npm run roadmap:update
+
+# Tester l'application
+npm run test
+
+# Générer le client Prisma
+npm run db:generate
+
+# Pousser les changements de base de données
+npm run db:push
+
+# Seeder la base de données
+npm run db:seed
 ```
-src/
-├── app/                    # App Router Next.js
-│   ├── layout.tsx         # Layout principal
-│   ├── page.tsx           # Page d'accueil
-│   └── globals.css        # Styles globaux
-├── components/            # Composants React
-│   ├── ui/               # Composants shadcn/ui
-│   ├── Hero.tsx          # Section héro
-│   └── ...               # Autres composants
-├── lib/                  # Utilitaires
-│   ├── auth.ts           # Configuration NextAuth
-│   ├── prisma.ts         # Client Prisma
-│   ├── utils.ts          # Fonctions utilitaires
-│   └── pricing-algorithm.ts # Algorithme de pricing
-└── types/                # Types TypeScript
-```
 
-## 💰 Modèle de Tarification
-
-Notre algorithme de pricing modulaire :
-
-- **Formation LLC** : 497€
-- **Banking US** : 197€
-- **Compliance** : 297€
-- **Growth Tools** : 397€
-
-**Réductions automatiques :**
-- 10% pour 400€+
-- 15% pour 600€+
-- 20% pour 800€+
-
-**Facteurs d'État :**
-- Delaware : 1.0x (référence)
-- Wyoming : 0.9x (moins cher)
-- Nevada : 1.1x (plus cher)
-- Autres : 1.2x (sur mesure)
-
-## 🎯 Fonctionnalités Clés
-
-### Page d'Accueil
-- Hero moderne avec proposition de valeur claire
-- Section problèmes des entrepreneurs globaux
-- Présentation de la solution Growth-as-a-Service
-- Modules de services modulaires
-- Calculateur de pricing interactif
-- Témoignages clients
-- FAQ interactive
-- Section blog
-
-### Système d'Authentification
-- Inscription/Connexion sécurisée
-- Sessions JWT
-- Routes protégées
-- Gestion des utilisateurs
-
-### Dashboard Client
-- Vue d'ensemble des entreprises
-- Métriques de revenus et conformité
-- Gestion des documents
-- Notifications intelligentes
-
-### Intégration Paiements
-- Stripe pour les paiements
-- Gestion des abonnements
-- Historique des transactions
-
-## 🚀 Déploiement
+## 📱 Déploiement
 
 ### Vercel (Recommandé)
-```bash
-# Installer Vercel CLI
-npm i -g vercel
-
-# Déployer
-vercel
-```
+1. Connecter le repository à Vercel
+2. Configurer les variables d'environnement
+3. Déployer automatiquement
 
 ### Autres plateformes
-L'application Next.js peut être déployée sur :
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
-
-## 📝 Scripts Disponibles
-
 ```bash
-npm run dev      # Développement local
-npm run build    # Build de production
-npm run start    # Démarrer en production
-npm run lint     # Linter ESLint
+npm run build
+npm start
 ```
 
-## 🔧 Configuration
+## 🔐 Sécurité
 
-### Variables d'Environnement
-Créer un fichier `.env.local` avec les variables nécessaires (voir section Installation).
+- Chiffrement des données sensibles
+- Conformité RGPD
+- Sauvegarde automatique
+- Accès sécurisé avec permissions granulaires
+- Audit trail complet
 
-### Tailwind CSS
-Configuration dans `tailwind.config.ts` avec :
-- Couleurs personnalisées
-- Animations
-- Composants shadcn/ui
+> **Sécurité :** Ne jamais commit vos clés API ou secrets dans le repository. Utilisez toujours le fichier `.env.local` pour les variables sensibles.
 
-## 🎨 Personnalisation
+## 📞 Support
 
-### Couleurs
-Modifier les variables CSS dans `src/app/globals.css` :
-
-```css
-:root {
-  --primary: 221.2 83.2% 53.3%;
-  --secondary: 210 40% 96%;
-  /* ... */
-}
-```
-
-### Composants
-Tous les composants sont dans `src/components/` et peuvent être facilement modifiés.
-
-## 📱 Responsive Design
-
-L'application est entièrement responsive avec :
-- Mobile-first approach
-- Breakpoints Tailwind
-- Navigation mobile optimisée
-- Composants adaptatifs
-
-## 🔍 SEO
-
-- Métadonnées optimisées
-- Structure sémantique
-- Performance optimisée
-- Images optimisées
-
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créer une branche feature
-3. Commit les changements
-4. Push vers la branche
-5. Ouvrir une Pull Request
+Pour toute question ou support :
+- Consulter la [Roadmap Consolidée](./ROADMAP_CONSOLIDATED.md)
+- Vérifier les [logs de développement](./GUIDE_DEPANNAGE.md)
+- Documentation technique : [DEPLOYMENT.md](./DEPLOYMENT.md)
+- Contacter l'équipe de développement
 
 ## 📄 Licence
 
-© 2024 ProsperaLink LLC. Tous droits réservés.
+Ce projet est propriétaire et confidentiel.
 
 ---
 
-**ProsperaLink** - Transformez votre présence américaine en avantage concurrentiel. 
+**ProsperaLink** - La référence mondiale pour la formation d'entreprises LLC avec IA.
