@@ -1,176 +1,187 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { 
   Building2, 
   FileText, 
   Shield, 
-  Users, 
+  Brain, 
   Globe, 
-  Zap, 
+  Clock, 
   CheckCircle, 
-  ArrowRight
+  ArrowRight,
+  DollarSign,
+  Users,
+  Zap,
+  Star
 } from 'lucide-react'
+import Link from 'next/link'
 
 export function Services() {
   const services = [
     {
       icon: Building2,
-      title: "Formation LLC",
-      description: "Création complète de votre entreprise en 12h",
-      features: ["Agent agréé inclus", "EIN automatique", "Conformité garantie"],
-      price: "À partir de $299/an",
-      badge: "Populaire",
-      color: "blue"
+      title: "Formation LLC Directe",
+      description: "Création immédiate avec tous les documents légaux requis",
+      features: [
+        "Articles d'organisation",
+        "Accord d'exploitation",
+        "Certificat de formation",
+        "Agent agréé inclus"
+      ],
+      price: "À partir de $299",
+      popular: true
     },
     {
       icon: FileText,
-      title: "Services comptables",
-      description: "Comptabilité complète et déclarations fiscales",
-      features: ["Comptabilité mensuelle", "Déclarations IRS", "Support dédié"],
-      price: "À partir de $200/mois",
-      badge: "Recommandé",
-      color: "green"
+      title: "EIN & Comptabilité",
+      description: "Numéro d'employeur fédéral et services comptables complets",
+      features: [
+        "EIN automatique",
+        "Comptabilité mensuelle",
+        "Déclarations fiscales",
+        "Rapports financiers"
+      ],
+      price: "À partir de $199",
+      popular: false
     },
     {
       icon: Shield,
-      title: "Conformité automatique",
-      description: "Surveillance et gestion des obligations légales",
-      features: ["Rapports annuels", "Form 5472", "Alertes automatiques"],
-      price: "À partir de $150/an",
-      badge: "Essentiel",
-      color: "purple"
+      title: "Conformité Automatique",
+      description: "Surveillance proactive de toutes les obligations légales",
+      features: [
+        "Surveillance continue",
+        "Alertes automatiques",
+        "Renouvellements",
+        "Support conformité"
+      ],
+      price: "À partir de $149",
+      popular: false
     },
     {
-      icon: Users,
+      icon: Brain,
       title: "Support IA Premium",
-      description: "Assistance intelligente 24/7 avec Gemini",
-      features: ["Chat IA avancé", "Réponses instantanées", "Support multilingue"],
-      price: "À partir de $100/mois",
-      badge: "Innovant",
-      color: "orange"
+      description: "Assistant IA intelligent 24/7 pour toutes vos questions",
+      features: [
+        "Support multilingue",
+        "Réponses instantanées",
+        "Conseils personnalisés",
+        "Historique complet"
+      ],
+      price: "À partir de $99",
+      popular: false
     },
     {
       icon: Globe,
-      title: "Services bancaires",
-      description: "Ouverture de comptes d'entreprise américains",
-      features: ["Compte bancaire", "Carte de crédit", "Services de paiement"],
-      price: "À partir de $100",
-      badge: "Exclusif",
-      color: "indigo"
+      title: "Services Internationaux",
+      description: "Support spécialisé pour entrepreneurs internationaux",
+      features: [
+        "Traduction automatique",
+        "Support culturel",
+        "Conseils juridiques",
+        "Accompagnement complet"
+      ],
+      price: "À partir de $199",
+      popular: false
     },
     {
-      icon: Zap,
-      title: "Accélération VIP",
-      description: "Service prioritaire et accompagnement dédié",
-      features: ["Formation en 6h", "Conciergerie", "Support direct"],
-      price: "À partir de $500",
-      badge: "Premium",
-      color: "red"
+      icon: Clock,
+      title: "Formation Express",
+      description: "Formation LLC en 12h avec processus automatisé",
+      features: [
+        "Processus automatisé",
+        "Suivi en temps réel",
+        "Documents instantanés",
+        "Support prioritaire"
+      ],
+      price: "À partir de $499",
+      popular: true
     }
   ]
 
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'blue': return 'border-blue-200 bg-blue-50 hover:border-blue-300'
-      case 'green': return 'border-green-200 bg-green-50 hover:border-green-300'
-      case 'purple': return 'border-purple-200 bg-purple-50 hover:border-purple-300'
-      case 'orange': return 'border-orange-200 bg-orange-50 hover:border-orange-300'
-      case 'indigo': return 'border-indigo-200 bg-indigo-50 hover:border-indigo-300'
-      case 'red': return 'border-red-200 bg-red-50 hover:border-red-300'
-      default: return 'border-gray-200 bg-gray-50 hover:border-gray-300'
-    }
-  }
-
-  const getBadgeColor = (color: string) => {
-    switch (color) {
-      case 'blue': return 'bg-blue-100 text-blue-800'
-      case 'green': return 'bg-green-100 text-green-800'
-      case 'purple': return 'bg-purple-100 text-purple-800'
-      case 'orange': return 'bg-orange-100 text-orange-800'
-      case 'indigo': return 'bg-indigo-100 text-indigo-800'
-      case 'red': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
   return (
-    <section id="services" className="py-20 bg-white">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4 bg-blue-100 text-blue-800">
-            <Zap className="w-4 h-4 mr-2" />
-            Nos services
+          <Badge variant="outline" className="mb-4">
+            <Star className="w-4 h-4 mr-2" />
+            Services
           </Badge>
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Solutions complètes pour votre entreprise
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            De la formation initiale à la gestion quotidienne, nous couvrons 
-            tous vos besoins pour réussir aux États-Unis.
+            De la formation initiale à la gestion continue, nous couvrons tous 
+            vos besoins pour une entreprise LLC prospère aux États-Unis.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card key={index} className={`group hover:shadow-xl transition-all duration-300 ${getColorClasses(service.color)}`}>
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                    <service.icon className="w-6 h-6 text-gray-700" />
-                  </div>
-                  <Badge className={getBadgeColor(service.color)}>
-                    {service.badge}
+            <Card key={index} className={`relative ${service.popular ? 'border-blue-200 shadow-lg' : 'hover:shadow-md'} transition-all duration-300`}>
+              {service.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-blue-600 text-white">
+                    <Star className="w-3 h-3 mr-1" />
+                    Populaire
                   </Badge>
                 </div>
-                <CardTitle className="text-xl font-bold text-gray-900 mt-4">
-                  {service.title}
-                </CardTitle>
-                <p className="text-gray-600">
-                  {service.description}
-                </p>
+              )}
+              <CardHeader className="text-center pb-4">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <service.icon className="w-8 h-8 text-blue-600" />
+                </div>
+                <CardTitle className="text-xl">{service.title}</CardTitle>
+                <p className="text-gray-600 text-sm">{service.description}</p>
               </CardHeader>
-              <CardContent className="pt-0">
-                <ul className="space-y-2 mb-6">
+              <CardContent>
+                <div className="space-y-3 mb-6">
                   {service.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center space-x-2 text-sm">
+                    <div key={featureIndex} className="flex items-center space-x-2">
                       <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
+                      <span className="text-sm text-gray-700">{feature}</span>
+                    </div>
                   ))}
-                </ul>
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-semibold text-gray-900">
-                    {service.price}
-                  </span>
-                  <Button size="sm" variant="outline" className="group-hover:bg-gray-900 group-hover:text-white">
-                    Détails
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900 mb-4">{service.price}</div>
+                  <Link href="/auth/signup">
+                    <Button 
+                      className={`w-full ${service.popular ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 hover:bg-gray-700'}`}
+                    >
+                      Commencer
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white text-center">
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-3xl font-bold mb-4">
-              Prêt à lancer votre entreprise américaine ?
+        <div className="mt-16 text-center">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Pourquoi choisir nos services ?
             </h3>
-            <p className="text-xl mb-6 opacity-90">
-              Rejoignez des centaines d'entrepreneurs qui ont déjà réussi avec ProsperaLink
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                Commencer maintenant
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
-                Parler à un expert
-              </Button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <Zap className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                <div className="font-semibold text-gray-900">Rapidité</div>
+                <div className="text-sm text-gray-600">Formation en 12h</div>
+              </div>
+              <div className="text-center">
+                <Shield className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                <div className="font-semibold text-gray-900">Sécurité</div>
+                <div className="text-sm text-gray-600">Conformité garantie</div>
+              </div>
+              <div className="text-center">
+                <Brain className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                <div className="font-semibold text-gray-900">Intelligence</div>
+                <div className="text-sm text-gray-600">Support IA 24/7</div>
+              </div>
             </div>
           </div>
         </div>

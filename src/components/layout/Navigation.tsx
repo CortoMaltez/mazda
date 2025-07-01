@@ -1,298 +1,272 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
-import { isClient, isConsultant, isAdmin } from "@/lib/auth";
+import { Menu, X, ChevronDown, Building2, Calculator, Users, Shield, Bot, Facebook, DollarSign, FileText, Settings, BarChart3, MessageSquare, Globe, Zap } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function Navigation() {
-  const { data: session, status } = useSession();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const menuItems = [
-    { name: "Accueil", href: "/#hero" },
-    { name: "Problème", href: "/#problem" },
-    { name: "Solution", href: "/#solution" },
-    { name: "Services", href: "/#services" },
-    { name: "Processus", href: "/#process" },
-    { name: "Tarifs", href: "/#pricing" },
-    { name: "Témoignages", href: "/#testimonials" },
-    { name: "FAQ", href: "/#faq" },
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navigationItems = [
+    {
+      name: "Formation LLC",
+      href: "#formation",
+      icon: Building2,
+      description: "Créer votre entreprise en 12h"
+    },
+    {
+      name: "Calculateur",
+      href: "#calculator",
+      icon: Calculator,
+      description: "Prix transparent en temps réel"
+    },
+    {
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: BarChart3,
+      description: "Gérer votre entreprise",
+      requiresAuth: true
+    },
+    {
+      name: "Support IA",
+      href: "#ai-support",
+      icon: Bot,
+      description: "Assistant 24/7 multilingue"
+    },
+    {
+      name: "Réseaux Sociaux",
+      href: "#social",
+      icon: Facebook,
+      description: "Gestion Facebook/Instagram"
+    },
+    {
+      name: "Conformité",
+      href: "#compliance",
+      icon: Shield,
+      description: "Documents et obligations"
+    },
+    {
+      name: "Paiements",
+      href: "#payments",
+      icon: DollarSign,
+      description: "Stripe intégré"
+    },
+    {
+      name: "Documents",
+      href: "#documents",
+      icon: FileText,
+      description: "Upload et gestion"
+    }
   ];
 
-  const serviceItems = [
-    { name: "Formation LLC", href: "/dashboard/calculator" },
-    { name: "EIN & Compte bancaire", href: "/dashboard/calculator" },
-    { name: "Services comptables", href: "/dashboard/calculator" },
+  const adminItems = [
+    {
+      name: "Admin Portal",
+      href: "/admin",
+      icon: Settings,
+      description: "Gestion CRM/ERP",
+      requiresAdmin: true
+    },
+    {
+      name: "Analytics",
+      href: "#analytics",
+      icon: BarChart3,
+      description: "Statistiques avancées",
+      requiresAdmin: true
+    }
   ];
-
-  const getRoleDisplayName = (role: string) => {
-    switch (role) {
-      case "CLIENT": return "Client";
-      case "CONSULTANT": return "Consultant";
-      case "ADMIN": return "Administrateur";
-      default: return "Utilisateur";
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "CLIENT": return "text-green-600";
-      case "CONSULTANT": return "text-blue-600";
-      case "ADMIN": return "text-purple-600";
-      default: return "text-gray-600";
-    }
-  };
-
-  const handleNavClick = (href: string) => {
-    setIsMenuOpen(false);
-    setIsServicesOpen(false);
-    
-    if (href.startsWith('/#')) {
-      const element = document.querySelector(href.substring(1));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
 
   return (
-    <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-transparent"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-blue-600">ProsperaLink</span>
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-gray-900">ProsperaLink</span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            {/* Services Dropdown */}
+            <div className="relative group">
+              <button className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors">
+                <span>Services</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="p-4 grid grid-cols-2 gap-4">
+                  {navigationItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <item.icon className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <div className="font-medium text-gray-900">{item.name}</div>
+                        <div className="text-sm text-gray-600">{item.description}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Access Links */}
+            <Link href="#calculator" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Calculateur
+            </Link>
+            <Link href="#formation" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Formation
+            </Link>
+            <Link href="#ai-support" className="text-gray-700 hover:text-blue-600 transition-colors">
+              IA Support
+            </Link>
+            <Link href="#social" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Réseaux Sociaux
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {menuItems.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => handleNavClick(item.href)}
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  {item.name}
-                </button>
-              ))}
-              
-              {/* Services Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsServicesOpen(!isServicesOpen)}
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center"
-                >
-                  Services
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-                
-                {isServicesOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    {serviceItems.map((service) => (
-                      <Link
-                        key={service.name}
-                        href={service.href}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsServicesOpen(false)}
-                      >
-                        {service.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop CTA Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Auth Buttons */}
+          <div className="hidden lg:flex items-center space-x-4">
             {session ? (
-              <div className="relative">
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  <User className="h-4 w-4" />
-                  <span>{session.user.name}</span>
-                  <span className={`text-xs ${getRoleColor(session.user.role)}`}>
-                    ({getRoleDisplayName(session.user.role)})
-                  </span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                
-                {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <Link
-                      href="/dashboard"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
-                    
-                    {isConsultant(session) && (
-                      <Link
-                        href="/consultant"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        Espace Consultant
-                      </Link>
-                    )}
-                    
-                    {isAdmin(session) && (
-                      <Link
-                        href="/admin"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        Administration
-                      </Link>
-                    )}
-                    
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Se déconnecter
-                    </button>
-                  </div>
+              <div className="flex items-center space-x-4">
+                <Link href="/dashboard">
+                  <Button variant="outline" size="sm">
+                    Dashboard
+                  </Button>
+                </Link>
+                {session.user?.role === "ADMIN" && (
+                  <Link href="/admin">
+                    <Button variant="outline" size="sm" className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100">
+                      Admin
+                    </Button>
+                  </Link>
                 )}
+                <Link href="/auth/signin">
+                  <Button size="sm">
+                    {session.user?.name || "Mon Compte"}
+                  </Button>
+                </Link>
               </div>
             ) : (
-              <>
+              <div className="flex items-center space-x-4">
                 <Link href="/auth/signin">
-                  <Button variant="ghost">Se connecter</Button>
+                  <Button variant="outline" size="sm">
+                    Connexion
+                  </Button>
                 </Link>
                 <Link href="/auth/signup">
-                  <Button>Commencer</Button>
+                  <Button size="sm">
+                    Commencer
+                  </Button>
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="lg:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
       {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-            {menuItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleNavClick(item.href)}
-                className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
-              >
-                {item.name}
-              </button>
-            ))}
-            
-            {/* Mobile Services */}
-            <div className="pt-4 pb-3 border-t border-gray-200">
-              <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Services
-              </div>
-              {serviceItems.map((service) => (
+      {isOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200">
+          <div className="px-4 py-6 space-y-4">
+            {/* Services Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {navigationItems.map((item) => (
                 <Link
-                  key={service.name}
-                  href={service.href}
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                  onClick={() => setIsMenuOpen(false)}
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  {service.name}
+                  <item.icon className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <div className="font-medium text-gray-900">{item.name}</div>
+                    <div className="text-sm text-gray-600">{item.description}</div>
+                  </div>
                 </Link>
               ))}
             </div>
 
-            {/* Mobile User Menu */}
-            {session ? (
-              <div className="pt-4 pb-3 border-t border-gray-200">
-                <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Compte
+            {/* Admin Items */}
+            {session?.user?.role === "ADMIN" && (
+              <div className="border-t pt-4">
+                <h3 className="text-sm font-medium text-gray-500 mb-3">Administration</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {adminItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-start space-x-3 p-3 rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      <item.icon className="w-5 h-5 text-red-600 mt-0.5" />
+                      <div>
+                        <div className="font-medium text-gray-900">{item.name}</div>
+                        <div className="text-sm text-gray-600">{item.description}</div>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-                <Link
-                  href="/dashboard"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                
-                {isConsultant(session) && (
-                  <Link
-                    href="/consultant"
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Espace Consultant
-                  </Link>
-                )}
-                
-                {isAdmin(session) && (
-                  <Link
-                    href="/admin"
-                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Administration
-                  </Link>
-                )}
-                
-                <button
-                  onClick={() => {
-                    signOut();
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Se déconnecter
-                </button>
-              </div>
-            ) : (
-              <div className="pt-4 pb-3 border-t border-gray-200">
-                <Link
-                  href="/auth/signin"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Se connecter
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Commencer
-                </Link>
               </div>
             )}
+
+            {/* Auth Buttons */}
+            <div className="border-t pt-4">
+              {session ? (
+                <div className="space-y-3">
+                  <Link href="/dashboard" onClick={() => setIsOpen(false)}>
+                    <Button className="w-full" size="sm">
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signin" onClick={() => setIsOpen(false)}>
+                    <Button variant="outline" className="w-full" size="sm">
+                      Mon Compte
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Link href="/auth/signin" onClick={() => setIsOpen(false)}>
+                    <Button variant="outline" className="w-full" size="sm">
+                      Connexion
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup" onClick={() => setIsOpen(false)}>
+                    <Button className="w-full" size="sm">
+                      Commencer
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -1,18 +1,29 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Input } from './ui/input';
-import { MessageCircle, Send, X, Bot, User, DollarSign, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { MessageCircle, Send, X, Bot, User, DollarSign, Zap, Sparkles, CheckCircle, Minimize2, Maximize2, Loader2 } from 'lucide-react';
 import { getGeminiCostManager, AI_BUDGET_CONFIG } from '../lib/gemini-cost-manager';
+import { Badge } from '@/components/ui/badge';
 
-interface ChatMessage {
+interface Message {
   id: string;
   content: string;
   sender: 'user' | 'bot';
   timestamp: Date;
-  cost?: number;
+  type?: 'text' | 'quick_reply' | 'qualification';
+}
+
+interface Prospect {
+  name: string;
+  email: string;
+  country: string;
+  businessType: string;
+  budget: string;
+  timeline: string;
+  qualified: boolean;
 }
 
 interface AIChatbotProps {
@@ -29,9 +40,20 @@ export default function AIChatbot({
   showCostTracker = true
 }: AIChatbotProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: "Bonjour ! Je suis l'assistant IA de ProsperaLink. Je peux vous aider à former votre LLC aux États-Unis en 12h. Comment puis-je vous aider aujourd'hui ?",
+      sender: 'bot',
+      timestamp: new Date(),
+      type: 'text'
+    }
+  ]);
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [prospect, setProspect] = useState<Prospect | null>(null);
+  const [qualificationStep, setQualificationStep] = useState(0);
   const [costStats, setCostStats] = useState<any>(null);
   const [hasError, setHasError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -144,54 +166,142 @@ export default function AIChatbot({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading || !costManager) return;
-
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-    setIsLoading(true);
-
-    try {
-      // Optimiser le prompt pour réduire les coûts
-      const optimizedPrompt = costManager.getOptimizedPrompt(
-        `En tant qu'expert en formation d'entreprises LLC aux États-Unis et spécialiste de ProsperaLink, réponds de manière professionnelle et utile à cette question: ${inputValue}. 
-        Inclus des informations sur nos services, tarifs, et avantages. Sois concis mais complet.`
-      );
-
-      const response = await costManager.generateText(optimizedPrompt);
-      
-      const botMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: response,
-        sender: 'bot',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => {
-        const newMessages = [...prev, botMessage];
-        // Garder seulement les derniers messages
-        return newMessages.slice(-maxMessages);
-      });
-
-    } catch (error) {
-      console.error('Erreur chatbot:', error);
-      const errorMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: 'Désolé, je rencontre des difficultés techniques. Veuillez réessayer dans quelques instants.',
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
+  const qualificationQuestions = [
+    {
+      question: "Quel est votre nom ?",
+      field: 'name' as keyof Prospect
+    },
+    {
+      question: "Quel est votre email ?",
+      field: 'email' as keyof Prospect
+    },
+    {
+      question: "De quel pays venez-vous ?",
+      field: 'country' as keyof Prospect
+    },
+    {
+      question: "Quel type d'entreprise souhaitez-vous créer ?",
+      field: 'businessType' as keyof Prospect,
+      options: ['SaaS', 'E-commerce', 'Consulting', 'Services', 'Autre']
+    },
+    {
+      question: "Quel est votre budget pour la formation ?",
+      field: 'budget' as keyof Prospect,
+      options: ['< $500', '$500-$1000', '$1000-$2000', '> $2000']
+    },
+    {
+      question: "Quand souhaitez-vous lancer votre entreprise ?",
+      field: 'timeline' as keyof Prospect,
+      options: ['Immédiatement', 'Dans 1 mois', 'Dans 3 mois', 'Plus tard']
     }
+  ];
+
+  const quickReplies = [
+    "Comment fonctionne la formation ?",
+    "Quels sont les prix ?",
+    "Combien de temps ça prend ?",
+    "Quels documents sont nécessaires ?",
+    "Puis-je parler à un expert ?"
+  ];
+
+  const addMessage = (content: string, sender: 'user' | 'bot', type: 'text' | 'quick_reply' | 'qualification' = 'text') => {
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      content,
+      sender,
+      timestamp: new Date(),
+      type
+    };
+    setMessages(prev => [...prev, newMessage]);
+  };
+
+  const handleQuickReply = (reply: string) => {
+    addMessage(reply, 'user', 'quick_reply');
+    setInputValue('');
+    setIsTyping(true);
+
+    // Simulate AI response
+    setTimeout(() => {
+      let response = '';
+      switch (reply) {
+        case "Comment fonctionne la formation ?":
+          response = "Notre formation LLC se fait en 3 étapes simples : 1) Remplissez notre formulaire en ligne, 2) Nous soumettons les documents à l'état, 3) Vous recevez votre LLC en 12h ! Voulez-vous que je vous guide pour commencer ?";
+          break;
+        case "Quels sont les prix ?":
+          response = "Nous avons 2 plans : Solo Founder ($899 setup + $29/mois) et Multi-Member ($999 setup + $49/mois). Prix transparents, aucun frais caché. Quel plan vous intéresse ?";
+          break;
+        case "Combien de temps ça prend ?":
+          response = "Formation en 12h garantie ! Nous utilisons des processus optimisés et l'IA pour accélérer le processus. Voulez-vous commencer maintenant ?";
+          break;
+        case "Quels documents sont nécessaires ?":
+          response = "Vous n'avez besoin que de votre passeport et d'une adresse email. Nous gérons tout le reste ! Souhaitez-vous que je vous qualifie pour commencer ?";
+          break;
+        case "Puis-je parler à un expert ?":
+          response = "Bien sûr ! Je peux vous connecter avec un expert. Mais d'abord, laissez-moi vous qualifier rapidement pour mieux vous servir. C'est parti ?";
+          break;
+        default:
+          response = "Merci pour votre question ! Je peux vous aider avec la formation LLC. Souhaitez-vous que je vous guide pour commencer ?";
+      }
+      addMessage(response, 'bot');
+      setIsTyping(false);
+    }, 1500);
+  };
+
+  const handleQualification = (answer: string) => {
+    if (!prospect) return;
+
+    const currentQuestion = qualificationQuestions[qualificationStep];
+    const updatedProspect = { ...prospect, [currentQuestion.field]: answer };
+    setProspect(updatedProspect);
+
+    addMessage(answer, 'user', 'qualification');
+
+    if (qualificationStep < qualificationQuestions.length - 1) {
+      setQualificationStep(qualificationStep + 1);
+      const nextQuestion = qualificationQuestions[qualificationStep + 1];
+      setTimeout(() => {
+        addMessage(nextQuestion.question, 'bot', 'qualification');
+      }, 500);
+    } else {
+      // Qualification complete
+      const finalProspect = { ...updatedProspect, qualified: true };
+      setProspect(finalProspect);
+      
+      setTimeout(() => {
+        addMessage("Parfait ! Votre qualification est terminée. Je vais créer votre profil prospect et vous connecter avec notre équipe. Voulez-vous commencer la formation maintenant ?", 'bot');
+        // Here you would typically send the prospect data to your CRM
+        console.log('Prospect qualified:', finalProspect);
+      }, 500);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+
+    const userMessage = inputValue;
+    setInputValue('');
+    addMessage(userMessage, 'user');
+    setIsTyping(true);
+
+    // Simulate AI processing
+    setTimeout(() => {
+      if (userMessage.toLowerCase().includes('commencer') || userMessage.toLowerCase().includes('formation')) {
+        setProspect({
+          name: '',
+          email: '',
+          country: '',
+          businessType: '',
+          budget: '',
+          timeline: '',
+          qualified: false
+        });
+        setQualificationStep(0);
+        addMessage(qualificationQuestions[0].question, 'bot', 'qualification');
+      } else {
+        addMessage("Merci pour votre message ! Je peux vous aider avec la formation LLC. Voulez-vous commencer le processus de qualification ?", 'bot');
+      }
+      setIsTyping(false);
+    }, 1500);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -202,119 +312,153 @@ export default function AIChatbot({
   };
 
   return (
-    <div className={`fixed ${getPositionClasses()} z-50`}>
-      {/* Bouton de chat flottant */}
-      {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className={`rounded-full w-14 h-14 shadow-lg ${getThemeClasses()} hover:scale-110 transition-all duration-200`}
-        >
-          <MessageCircle className="w-6 h-6" />
-        </Button>
-      )}
+    <>
+      {/* Chat Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 z-40"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </button>
 
-      {/* Interface de chat */}
+      {/* Chat Window */}
       {isOpen && (
-        <Card className={`w-96 h-[500px] shadow-2xl ${getThemeClasses()} flex flex-col`}>
+        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl border z-50 flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-opacity-20">
-            <div className="flex items-center space-x-2">
-              <Bot className="w-5 h-5" />
-              <h3 className="font-semibold">Assistant IA ProsperaLink</h3>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-              className="text-opacity-70 hover:text-opacity-100"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Zone des messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.sender === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-900'
-                  }`}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">ProsperaLink IA</h3>
+                  <p className="text-xs opacity-90">Formation LLC en 12h</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setIsMinimized(!isMinimized)}
+                  className="p-1 hover:bg-white hover:bg-opacity-20 rounded"
                 >
-                  <p className="text-sm">{message.content}</p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString()}
-                  </p>
-                </div>
+                  {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-1 hover:bg-white hover:bg-opacity-20 rounded"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-900 rounded-lg p-3">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            </div>
+          </div>
+
+          {!isMinimized && (
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] p-3 rounded-lg ${
+                        message.sender === 'user'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
+                      <p className="text-sm">{message.content}</p>
+                      {message.type === 'qualification' && message.sender === 'bot' && (
+                        <div className="mt-3 space-y-2">
+                          {qualificationQuestions[qualificationStep]?.options ? (
+                            qualificationQuestions[qualificationStep].options?.map((option) => (
+                              <button
+                                key={option}
+                                onClick={() => handleQualification(option)}
+                                className="block w-full text-left p-2 bg-white bg-opacity-20 rounded text-sm hover:bg-opacity-30 transition-colors"
+                              >
+                                {option}
+                              </button>
+                            ))
+                          ) : (
+                            <div className="text-xs opacity-75">
+                              Tapez votre réponse ci-dessous
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
+                ))}
 
-          {/* Tracker de coûts */}
-          {showCostTracker && costStats && (
-            <div className="px-4 py-2 bg-opacity-10 border-t border-opacity-20">
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center space-x-1">
-                  <DollarSign className="w-3 h-3" />
-                  <span>Budget: ${costStats.budgetRemaining?.daily?.toFixed(2) || '0.00'}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Zap className="w-3 h-3" />
-                  <span>{costStats.budgetPercentage?.daily?.toFixed(1) || '0'}%</span>
-                </div>
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 p-3 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm text-gray-600">IA en train d'écrire...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Quick Replies */}
+                {messages.length === 1 && (
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-500 text-center">Questions rapides :</p>
+                    <div className="flex flex-wrap gap-2">
+                      {quickReplies.map((reply) => (
+                        <button
+                          key={reply}
+                          onClick={() => handleQuickReply(reply)}
+                          className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors"
+                        >
+                          {reply}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-1 mt-1">
-                <div
-                  className="bg-green-500 h-1 rounded-full transition-all duration-300"
-                  style={{ width: `${Math.min(costStats.budgetPercentage?.daily || 0, 100)}%` }}
-                ></div>
+
+              {/* Input */}
+              <div className="p-4 border-t">
+                <div className="flex space-x-2">
+                  <Input
+                    ref={inputRef}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Tapez votre message..."
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputValue.trim() || isTyping}
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                {prospect && (
+                  <div className="mt-2 p-2 bg-green-50 rounded text-xs text-green-700">
+                    <div className="flex items-center space-x-1">
+                      <CheckCircle className="w-3 h-3" />
+                      <span>Qualification en cours...</span>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            </>
           )}
-
-          {/* Zone de saisie */}
-          <div className="p-4 border-t border-opacity-20">
-            <div className="flex space-x-2">
-              <Input
-                ref={inputRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Tapez votre message..."
-                className="flex-1"
-                disabled={isLoading}
-              />
-              <Button
-                onClick={handleSendMessage}
-                disabled={isLoading || !inputValue.trim()}
-                size="sm"
-                className="px-3"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        </Card>
+        </div>
       )}
-    </div>
+    </>
   );
 } 

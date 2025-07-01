@@ -203,7 +203,7 @@ export function PriceCalculator() {
                         </label>
                         <p className="text-sm text-gray-600">{service.description}</p>
                         {!service.included && (
-                          <p className="text-sm text-blue-600 font-medium">
+                          <p className="text-sm font-medium text-gray-900">
                             +${service.price}
                           </p>
                         )}
@@ -212,125 +212,101 @@ export function PriceCalculator() {
                   ))}
                 </div>
               </div>
-
-              {/* Breakdown Toggle */}
-              <Button
-                variant="outline"
-                onClick={() => setShowBreakdown(!showBreakdown)}
-                className="w-full"
-              >
-                <Info className="w-4 h-4 mr-2" />
-                {showBreakdown ? 'Masquer' : 'Voir'} le détail des coûts
-              </Button>
             </CardContent>
           </Card>
 
           {/* Price Summary */}
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
+          <Card className="p-6">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <DollarSign className="w-5 h-5" />
-                <span>Récapitulatif</span>
+                <span>Résumé des coûts</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* State Info */}
-              <div className="bg-white p-4 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium">{selectedState}</span>
-                  <Badge className={getTierColor(getStateTier(selectedState))}>
-                    {getStateTier(selectedState)}
-                  </Badge>
+              {/* State Price */}
+              <div className="flex justify-between items-center">
+                <div>
+                  <div className="font-medium text-gray-900">Formation LLC - {selectedState}</div>
+                  <div className="text-sm text-gray-600">Prix de base annuel</div>
                 </div>
-                <p className="text-sm text-gray-600">
-                  Formation LLC + Agent agréé + Conformité
-                </p>
+                <div className="text-right">
+                  <div className="font-bold text-gray-900">${getStatePrice(selectedState)}</div>
+                  <div className="text-sm text-gray-600">/an</div>
+                </div>
               </div>
 
-              {/* Selected Services */}
-              <div>
-                <h4 className="font-medium mb-3">Services sélectionnés :</h4>
-                <div className="space-y-2">
-                  {selectedServices.map((serviceId) => {
-                    const service = services.find(s => s.id === serviceId)
-                    if (!service) return null
-                    
-                    return (
-                      <div key={serviceId} className="flex items-center justify-between text-sm">
-                        <span className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span>{service.name}</span>
-                        </span>
-                        <span className="font-medium">
-                          {service.included ? 'Inclus' : `$${service.price}`}
-                        </span>
-                      </div>
-                    )
-                  })}
+              {/* Additional Services */}
+              {selectedServices.filter(id => id !== 'llc-formation').length > 0 && (
+                <div className="space-y-3">
+                  <div className="font-medium text-gray-900">Services additionnels</div>
+                  {selectedServices
+                    .filter(serviceId => serviceId !== 'llc-formation')
+                    .map(serviceId => {
+                      const service = services.find(s => s.id === serviceId)
+                      return service ? (
+                        <div key={serviceId} className="flex justify-between items-center">
+                          <span className="text-sm text-gray-700">{service.name}</span>
+                          <span className="text-sm font-medium text-gray-900">+${service.price}</span>
+                        </div>
+                      ) : null
+                    })}
                 </div>
+              )}
+
+              {/* Total */}
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center">
+                  <div className="text-lg font-bold text-gray-900">Total annuel</div>
+                  <div className="text-2xl font-bold text-blue-600">${total}</div>
+                </div>
+                <div className="text-sm text-gray-600 mt-1">
+                  Coûts réels + profit fixe de $500
+                </div>
+              </div>
+
+              {/* Breakdown Toggle */}
+              <div className="text-center">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowBreakdown(!showBreakdown)}
+                  className="w-full"
+                >
+                  <Info className="w-4 h-4 mr-2" />
+                  {showBreakdown ? 'Masquer' : 'Voir'} le détail des coûts
+                </Button>
               </div>
 
               {/* Cost Breakdown */}
               {showBreakdown && (
-                <div className="bg-white p-4 rounded-lg">
-                  <h4 className="font-medium mb-3">Détail des coûts :</h4>
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                  <div className="font-medium text-gray-900">Détail des coûts</div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>Agent agréé :</span>
-                      <span>$150</span>
+                      <span>Coûts réels de l'état</span>
+                      <span>${getStatePrice(selectedState) - 500}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Rapport annuel :</span>
-                      <span>$50</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Frais IRS :</span>
-                      <span>$50</span>
-                    </div>
-                    <div className="flex justify-between font-medium border-t pt-2">
-                      <span>Coûts totaux :</span>
-                      <span>$250</span>
-                    </div>
-                    <div className="flex justify-between font-bold text-blue-600">
-                      <span>Profit fixe :</span>
+                      <span>Profit fixe ProsperaLink</span>
                       <span>$500</span>
+                    </div>
+                    <div className="flex justify-between font-medium">
+                      <span>Total</span>
+                      <span>${getStatePrice(selectedState)}</span>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Total Price */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg">
-                <div className="text-center">
-                  <p className="text-sm opacity-90">Prix total annuel</p>
-                  <p className="text-4xl font-bold">${total}</p>
-                  <p className="text-sm opacity-90 mt-2">
-                    ou ${Math.round(total / 12)}/mois
-                  </p>
-                </div>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="space-y-3">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+              {/* CTA */}
+              <div className="text-center">
+                <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700">
                   Commencer maintenant
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Comparer les états
-                </Button>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="flex items-center justify-center space-x-4 text-sm text-gray-600">
-                <div className="flex items-center space-x-1">
-                  <Shield className="w-4 h-4" />
-                  <span>Garantie 30j</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Clock className="w-4 h-4" />
-                  <span>Formation en 12h</span>
-                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Aucun engagement, annulation à tout moment
+                </p>
               </div>
             </CardContent>
           </Card>

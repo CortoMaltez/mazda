@@ -5,13 +5,27 @@
 DATABASE_URL="file:./dev.db"
 
 # NextAuth
-NEXTAUTH_SECRET="your-secret-key-here-change-in-production"
+NEXTAUTH_SECRET="your-nextauth-secret"
 NEXTAUTH_URL="http://localhost:3000"
 
 # Stripe (optionnel pour le développement)
-STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key_here"
-STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret_here"
-STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key_here"
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+STRIPE_PUBLISHABLE_KEY="pk_test_..."
+
+# Google Gemini AI
+GOOGLE_GEMINI_API_KEY="your-gemini-api-key"
+
+# Facebook/Meta API
+FACEBOOK_APP_ID="736683922139398"
+FACEBOOK_APP_SECRET="d75a56bd78e799375b370240394f0dfe"
+FACEBOOK_NAMESPACE="prosperalink"
+FACEBOOK_REDIRECT_URI="http://localhost:3000/api/auth/facebook/callback"
+
+# Privacy and Terms URLs
+PRIVACY_POLICY_URL="https://prosperalink.com/privacy"
+TERMS_OF_SERVICE_URL="https://prosperalink.com/terms"
+DATA_DELETION_URL="https://prosperalink.com/data-deletion"
 
 # Instructions :
 # 1. Créez un fichier .env.local à la racine du projet
