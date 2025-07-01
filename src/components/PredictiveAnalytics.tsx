@@ -28,7 +28,7 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react';
-import { getGeminiCostManager } from '../lib/gemini-cost-manager';
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
 interface PredictionData {
   metric: string;
@@ -164,7 +164,7 @@ export default function PredictiveAnalytics() {
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   const [isLoading, setIsLoading] = useState(false);
 
-  const costManager = getGeminiCostManager();
+      // Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
   useEffect(() => {
     // Simuler le rafraîchissement des données

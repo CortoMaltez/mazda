@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { isConsultant } from "@/lib/auth";
+import { isConsultant } from "@/lib/auth-logic";
 import { useState, useEffect } from "react";
 
 interface Permission {

@@ -1,0 +1,827 @@
+[
+  {
+    "state": "Delaware",
+    "stateCode": "DE",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 300,
+        "dueDateRule": { "type": "annual_march", "day": 1 },
+        "filingUrl": "https://corp.delaware.gov/annual-reports/",
+        "description": "Rapport annuel obligatoire pour toutes les LLCs",
+        "lateFee": 200,
+        "gracePeriod": 30
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "Franchise Tax",
+        "category": "STATE_TAX",
+        "fee": 300,
+        "notes": "Taxe de franchise annuelle pour toutes les LLCs",
+        "dueDate": "March 1",
+        "lateFee": 200,
+        "gracePeriod": 30
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Vérifier les licences professionnelles locales",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Certaines professions (avocats, médecins, etc.) nécessitent des licences d'État spécifiques",
+        "estimatedFee": "50-500",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Vérifier les exigences de licence commerciale dans la ville/comté du siège social",
+        "estimatedFee": "25-200",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles en Delaware",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche du premier salarié (Delaware Division of Unemployment Insurance)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 600
+  },
+  {
+    "state": "Wyoming",
+    "stateCode": "WY",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 50,
+        "dueDateRule": { "type": "annual_december", "day": 1 },
+        "filingUrl": "https://wyobiz.wyo.gov/",
+        "description": "Rapport annuel avec frais minimaux",
+        "lateFee": 25,
+        "gracePeriod": 60
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Vérifier les exigences de licence commerciale dans la ville/comté",
+        "estimatedFee": "25-150",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (4% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (médecine, droit, etc.)",
+        "estimatedFee": "100-500",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Wyoming Department of Workforce Services)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 50
+  },
+  {
+    "state": "Nevada",
+    "stateCode": "NV",
+    "stateFilings": [
+      {
+        "name": "Annual List",
+        "category": "STATE_REPORT",
+        "fee": 150,
+        "dueDateRule": { "type": "annual_august", "day": 31 },
+        "filingUrl": "https://www.nvsos.gov/sos/",
+        "description": "Liste annuelle des membres et dirigeants",
+        "lateFee": 75,
+        "gracePeriod": 30
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      },
+      {
+        "name": "Modified Business Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Taxe sur les salaires si l'entreprise a des employés",
+        "dueDate": "Quarterly",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes du Nevada",
+        "estimatedFee": "50-300",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (taux variable selon le comté)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Gaming License",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Si l'entreprise est liée aux jeux d'argent (licence spéciale requise)",
+        "estimatedFee": "5000-50000",
+        "feeNotes": "Très coûteux, processus complexe"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Nevada Department of Employment, Training and Rehabilitation)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 150
+  },
+  {
+    "state": "Florida",
+    "stateCode": "FL",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 138.75,
+        "dueDateRule": { "type": "annual_may", "day": 1 },
+        "filingUrl": "https://dos.myflorida.com/sunbiz/",
+        "description": "Rapport annuel avec informations mises à jour",
+        "lateFee": 400,
+        "gracePeriod": 0
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes/comtés de Floride",
+        "estimatedFee": "25-250",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (6% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "100-1000",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Florida Department of Revenue)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Workers' Compensation",
+        "category": "EMPLOYMENT",
+        "notes": "Assurance obligatoire si l'entreprise a 4 employés ou plus",
+        "estimatedFee": "Variable",
+        "feeNotes": "Basé sur la masse salariale et le type d'activité"
+      }
+    ],
+    "totalEstimatedAnnualCost": 138.75
+  },
+  {
+    "state": "Texas",
+    "stateCode": "TX",
+    "stateFilings": [
+      {
+        "name": "Public Information Report",
+        "category": "STATE_REPORT",
+        "fee": 0,
+        "dueDateRule": { "type": "annual_may", "day": 15 },
+        "filingUrl": "https://www.sos.state.tx.us/",
+        "description": "Rapport d'information publique annuel",
+        "lateFee": 0,
+        "gracePeriod": 0
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      },
+      {
+        "name": "Franchise Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Taxe de franchise basée sur les revenus (seuil d'exemption: $1.23M)",
+        "dueDate": "May 15",
+        "lateFee": "Variable",
+        "gracePeriod": 30
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes du Texas",
+        "estimatedFee": "25-300",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (6.25% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (plomberie, électricité, etc.)",
+        "estimatedFee": "50-500",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Texas Workforce Commission)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Workers' Compensation",
+        "category": "EMPLOYMENT",
+        "notes": "Assurance obligatoire pour la plupart des employeurs",
+        "estimatedFee": "Variable",
+        "feeNotes": "Basé sur la masse salariale et le type d'activité"
+      }
+    ],
+    "totalEstimatedAnnualCost": 0
+  },
+  {
+    "state": "California",
+    "stateCode": "CA",
+    "stateFilings": [
+      {
+        "name": "Statement of Information (Form LLC-12)",
+        "category": "STATE_REPORT",
+        "fee": 20,
+        "dueDateRule": { "type": "biennial_anniversary" },
+        "filingUrl": "https://www.sos.ca.gov/",
+        "description": "Déclaration d'information tous les 2 ans",
+        "lateFee": 250,
+        "gracePeriod": 0
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "Franchise Tax (Form 3522)",
+        "category": "STATE_TAX",
+        "fee": 800,
+        "notes": "Taxe de franchise minimale annuelle pour toutes les LLCs",
+        "dueDate": "April 15",
+        "lateFee": 200,
+        "gracePeriod": 15
+      },
+      {
+        "name": "State Income Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Impôt sur le revenu d'État basé sur les bénéfices",
+        "dueDate": "April 15",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes de Californie",
+        "estimatedFee": "50-400",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (taux variable selon le comté)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Conformité CCPA/CPRA",
+        "category": "DATA_PRIVACY",
+        "notes": "Si l'entreprise collecte des données personnelles, politique de confidentialité conforme requise",
+        "estimatedFee": "0-5000",
+        "feeNotes": "Coût principal pour la conformité légale"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "100-2000",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (EDD - Employment Development Department)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Workers' Compensation",
+        "category": "EMPLOYMENT",
+        "notes": "Assurance obligatoire dès le premier employé",
+        "estimatedFee": "Variable",
+        "feeNotes": "Basé sur la masse salariale et le type d'activité"
+      }
+    ],
+    "totalEstimatedAnnualCost": 820
+  },
+  {
+    "state": "New York",
+    "stateCode": "NY",
+    "stateFilings": [
+      {
+        "name": "Biennial Statement",
+        "category": "STATE_REPORT",
+        "fee": 9,
+        "dueDateRule": { "type": "biennial_anniversary" },
+        "filingUrl": "https://dos.ny.gov/",
+        "description": "Déclaration biennale des informations",
+        "lateFee": 250,
+        "gracePeriod": 0
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "State Income Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Impôt sur le revenu d'État basé sur les bénéfices",
+        "dueDate": "March 15",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes de New York",
+        "estimatedFee": "50-500",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (4% de taxe de vente d'État)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (restauration, construction, etc.)",
+        "estimatedFee": "100-1500",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (New York State Department of Labor)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Workers' Compensation",
+        "category": "EMPLOYMENT",
+        "notes": "Assurance obligatoire pour tous les employeurs",
+        "estimatedFee": "Variable",
+        "feeNotes": "Basé sur la masse salariale et le type d'activité"
+      }
+    ],
+    "totalEstimatedAnnualCost": 9
+  },
+  {
+    "state": "Arizona",
+    "stateCode": "AZ",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 45,
+        "dueDateRule": { "type": "annual_anniversary" },
+        "filingUrl": "https://azcc.gov/",
+        "description": "Rapport annuel à la date anniversaire de formation",
+        "lateFee": 45,
+        "gracePeriod": 60
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes d'Arizona",
+        "estimatedFee": "25-200",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (5.6% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "50-1000",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Arizona Department of Economic Security)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 45
+  },
+  {
+    "state": "Colorado",
+    "stateCode": "CO",
+    "stateFilings": [
+      {
+        "name": "Periodic Report",
+        "category": "STATE_REPORT",
+        "fee": 10,
+        "dueDateRule": { "type": "annual_anniversary" },
+        "filingUrl": "https://www.coloradosos.gov/",
+        "description": "Rapport périodique annuel",
+        "lateFee": 50,
+        "gracePeriod": 60
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "State Income Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Impôt sur le revenu d'État basé sur les bénéfices",
+        "dueDate": "April 15",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes du Colorado",
+        "estimatedFee": "25-300",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (2.9% de taxe de vente d'État)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "50-800",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Colorado Department of Labor and Employment)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 10
+  },
+  {
+    "state": "Utah",
+    "stateCode": "UT",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 15,
+        "dueDateRule": { "type": "annual_anniversary" },
+        "filingUrl": "https://corporations.utah.gov/",
+        "description": "Rapport annuel à la date anniversaire",
+        "lateFee": 25,
+        "gracePeriod": 60
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "State Income Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Impôt sur le revenu d'État basé sur les bénéfices",
+        "dueDate": "April 15",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes d'Utah",
+        "estimatedFee": "25-150",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (4.85% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "50-600",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Utah Department of Workforce Services)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 15
+  },
+  {
+    "state": "New Mexico",
+    "stateCode": "NM",
+    "stateFilings": [
+      {
+        "name": "Biennial Report",
+        "category": "STATE_REPORT",
+        "fee": 0,
+        "dueDateRule": { "type": "biennial_anniversary" },
+        "filingUrl": "https://www.sos.state.nm.us/",
+        "description": "Rapport biennal gratuit",
+        "lateFee": 0,
+        "gracePeriod": 0
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "State Income Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Impôt sur le revenu d'État basé sur les bénéfices",
+        "dueDate": "April 15",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes du Nouveau-Mexique",
+        "estimatedFee": "25-200",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (5.125% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "50-800",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (New Mexico Department of Workforce Solutions)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 0
+  },
+  {
+    "state": "South Dakota",
+    "stateCode": "SD",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 50,
+        "dueDateRule": { "type": "annual_anniversary" },
+        "filingUrl": "https://sdsos.gov/",
+        "description": "Rapport annuel à la date anniversaire",
+        "lateFee": 50,
+        "gracePeriod": 60
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes du Dakota du Sud",
+        "estimatedFee": "25-150",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (4.5% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "50-600",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (South Dakota Department of Labor and Regulation)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 50
+  },
+  {
+    "state": "Washington",
+    "stateCode": "WA",
+    "stateFilings": [
+      {
+        "name": "Annual Report",
+        "category": "STATE_REPORT",
+        "fee": 60,
+        "dueDateRule": { "type": "annual_anniversary" },
+        "filingUrl": "https://www.sos.wa.gov/",
+        "description": "Rapport annuel à la date anniversaire",
+        "lateFee": 25,
+        "gracePeriod": 0
+      }
+    ],
+    "taxRequirements": [
+      {
+        "name": "No State Income Tax",
+        "category": "STATE_TAX",
+        "fee": 0,
+        "notes": "Aucun impôt sur le revenu d'État",
+        "dueDate": "N/A",
+        "lateFee": 0,
+        "gracePeriod": 0
+      },
+      {
+        "name": "Business and Occupation Tax",
+        "category": "STATE_TAX",
+        "fee": "Variable",
+        "notes": "Taxe sur les activités commerciales basée sur les revenus",
+        "dueDate": "Monthly/Quarterly",
+        "lateFee": "Variable",
+        "gracePeriod": 15
+      }
+    ],
+    "potentialOtherRequirements": [
+      {
+        "name": "Business License locale",
+        "category": "LOCAL_COMPLIANCE",
+        "notes": "Licence commerciale requise dans la plupart des villes de Washington",
+        "estimatedFee": "25-300",
+        "feeNotes": "Varie selon la ville"
+      },
+      {
+        "name": "Sales Tax Permit",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Requis si l'entreprise vend des biens tangibles (6.5% de taxe de vente)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      },
+      {
+        "name": "Licences professionnelles",
+        "category": "INDUSTRY_SPECIFIC",
+        "notes": "Certaines professions nécessitent des licences d'État (construction, santé, etc.)",
+        "estimatedFee": "50-1000",
+        "feeNotes": "Varie selon la profession"
+      },
+      {
+        "name": "Enregistrement employeur",
+        "category": "EMPLOYMENT",
+        "notes": "Obligatoire dès l'embauche (Washington State Department of Labor & Industries)",
+        "estimatedFee": 0,
+        "feeNotes": "Gratuit"
+      }
+    ],
+    "totalEstimatedAnnualCost": 60
+  }
+] 

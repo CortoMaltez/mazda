@@ -31,7 +31,7 @@ import {
   Clock,
   Brain
 } from 'lucide-react';
-import { getGeminiCostManager, AI_BUDGET_CONFIG } from '../lib/gemini-cost-manager';
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 import AIPricingAdvisor from './AIPricingAdvisor';
 import ProductManagement from './ProductManagement';
 import ContentGenerator from './ContentGenerator';
@@ -151,7 +151,7 @@ export default function AIAdminPanel() {
   ]);
   const [selectedTab, setSelectedTab] = useState('overview');
 
-  const costManager = getGeminiCostManager();
+  // Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
   useEffect(() => {
     // Charger les statistiques

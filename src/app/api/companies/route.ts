@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { CompanyService } from "@/services/companyService";
 
 // GET - Récupérer toutes les entreprises de l'utilisateur
 export async function GET() {
@@ -15,18 +15,7 @@ export async function GET() {
       );
     }
 
-    const companies = await prisma.company.findMany({
-      where: {
-        userId: session.user.id
-      },
-      include: {
-        documents: true,
-        payments: true,
-      },
-      orderBy: {
-        createdAt: "desc"
-      }
-    });
+    const companies = await CompanyService.getUserCompanies(session.user.id);
 
     return NextResponse.json(companies);
   } catch (error) {
@@ -50,38 +39,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, state, businessType, formationDate } = await request.json();
+    const companyData = await request.json();
 
-    if (!name || !state || !businessType) {
+    const result = await CompanyService.createCompany(session.user.id, companyData);
+
+    return NextResponse.json(result, { status: 201 });
+  } catch (error) {
+    console.error("Erreur lors de la création de l'entreprise:", error);
+    
+    if (error instanceof Error) {
       return NextResponse.json(
-        { error: "Nom, état et type d'entreprise sont requis" },
+        { error: error.message },
         { status: 400 }
       );
     }
-
-    const company = await prisma.company.create({
-      data: {
-        name,
-        state,
-        businessType,
-        formationDate: formationDate ? new Date(formationDate) : null,
-        userId: session.user.id,
-      },
-      include: {
-        documents: true,
-        payments: true,
-      }
-    });
-
-    return NextResponse.json(
-      { 
-        message: "Entreprise créée avec succès",
-        company 
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Erreur lors de la création de l'entreprise:", error);
+    
     return NextResponse.json(
       { error: "Erreur interne du serveur" },
       { status: 500 }

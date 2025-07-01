@@ -1,5 +1,6 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import { hasPermission } from "@/lib/auth-logic";
 
 export default withAuth(
   function middleware(req) {
@@ -15,7 +16,7 @@ export default withAuth(
     // Routes client (CLIENT+)
     const clientRoutes = ["/dashboard", "/dashboard/calculator"];
     if (clientRoutes.some(route => path.startsWith(route))) {
-      if (!token || !["CLIENT", "CONSULTANT", "ADMIN"].includes(token.role as string)) {
+      if (!token || !hasPermission(token.role as string, "CLIENT")) {
         return NextResponse.redirect(new URL("/auth/signin", req.url));
       }
     }
@@ -23,7 +24,7 @@ export default withAuth(
     // Routes admin (ADMIN seulement)
     const adminRoutes = ["/admin"];
     if (adminRoutes.some(route => path.startsWith(route))) {
-      if (!token || token.role !== "ADMIN") {
+      if (!token || !hasPermission(token.role as string, "ADMIN")) {
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }
@@ -31,7 +32,7 @@ export default withAuth(
     // Routes consultant (CONSULTANT+ avec permissions)
     const consultantRoutes = ["/consultant"];
     if (consultantRoutes.some(route => path.startsWith(route))) {
-      if (!token || !["CONSULTANT", "ADMIN"].includes(token.role as string)) {
+      if (!token || !hasPermission(token.role as string, "CONSULTANT")) {
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     }

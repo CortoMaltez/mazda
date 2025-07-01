@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { isAdmin } from "@/lib/auth";
+import { isAdmin } from "@/lib/auth-logic";
 import { useState, useEffect } from "react";
 import ProgressTracker from "@/components/ProgressTracker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

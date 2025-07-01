@@ -25,7 +25,7 @@ import {
   Brain,
   Globe
 } from 'lucide-react';
-import { getGeminiCostManager } from '../lib/gemini-cost-manager';
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
 interface Message {
   id: string;
@@ -82,7 +82,7 @@ export default function WhatsAppBot({
     aiCosts: 0
   });
 
-  const costManager = getGeminiCostManager();
+  // Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

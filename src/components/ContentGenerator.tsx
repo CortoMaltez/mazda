@@ -28,7 +28,7 @@ import {
   AtSign,
   Link as LinkIcon
 } from 'lucide-react';
-import { getGeminiCostManager } from '../lib/gemini-cost-manager';
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
 interface ContentType {
   id: string;

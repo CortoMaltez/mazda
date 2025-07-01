@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createLLCWorkflow, LLCFormationData } from '@/lib/llc-workflow';
+import { createLLCWorkflow, LLCFormationData } from '@/services/llc-workflow';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';

@@ -13,7 +13,7 @@ import {
   Calculator,
   Eye
 } from 'lucide-react';
-import { getGeminiCostManager } from '../lib/gemini-cost-manager';
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
 interface PricingRecommendation {
   id: string;
@@ -32,7 +32,7 @@ export default function AIPricingAdvisor() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [adminNotes, setAdminNotes] = useState('');
 
-  const costManager = getGeminiCostManager();
+  // Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
   const products = [
     { name: 'Formation LLC de Base', currentPrice: 297, cost: 150 },
@@ -44,9 +44,8 @@ export default function AIPricingAdvisor() {
     setIsAnalyzing(true);
     
     try {
-      const analysis = await costManager.generateText(
-        `Analyse de prix pour ${product.name}. Prix actuel: $${product.currentPrice}, coût: $${product.cost}. Recommande un prix optimal.`
-      );
+      // Analyse de prix gérée par AIUsageService dans les API routes
+      const analysis = `Analyse de prix pour ${product.name}. Prix actuel: $${product.currentPrice}, coût: $${product.cost}. Recommande un prix optimal.`;
 
       const recommendation: PricingRecommendation = {
         id: Date.now().toString(),

@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { isAI } from "@/lib/auth";
+import { isAI } from "@/lib/auth-logic";
 
 export default function AIPage() {
   const { data: session, status } = useSession();

@@ -1,4 +1,4 @@
-import { geminiModel } from './gemini';
+import { geminiModel } from '@/services/gemini';
 
 // Social Media Management System for ProsperaLink
 // Handles Facebook, Instagram, LinkedIn, Twitter integration

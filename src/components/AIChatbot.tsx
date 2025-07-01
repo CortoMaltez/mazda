@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MessageCircle, Send, X, Bot, User, DollarSign, Zap, Sparkles, CheckCircle, Minimize2, Maximize2, Loader2 } from 'lucide-react';
-import { getGeminiCostManager, AI_BUDGET_CONFIG } from '../lib/gemini-cost-manager';
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 import { Badge } from '@/components/ui/badge';
 
 interface Message {
@@ -84,15 +84,8 @@ export default function AIChatbot({
     }
   };
 
-  // Gestion sécurisée du costManager
-  const costManager = React.useMemo(() => {
-    try {
-      return getGeminiCostManager();
-    } catch (error) {
-      console.warn('AIChatbot: Impossible d\'initialiser le gestionnaire de coûts:', error);
-      return null;
-    }
-  }, []);
+  // Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
+  const costManager = null;
 
   // Si le gestionnaire de coûts n'est pas disponible, afficher un message d'erreur discret
   if (!costManager) {
@@ -151,13 +144,9 @@ export default function AIChatbot({
   }, []);
 
   useEffect(() => {
-    // Mettre à jour les statistiques de coûts de manière sécurisée
-    if (showCostTracker && costManager) {
-      try {
-        setCostStats(costManager.getCostStats());
-      } catch (error) {
-        console.warn('Erreur lors de la récupération des statistiques de coûts:', error);
-      }
+    // Statistiques de coûts IA gérées par AIUsageService
+    if (showCostTracker) {
+      // Les statistiques sont maintenant gérées côté serveur
     }
   }, [messages, showCostTracker, costManager]);
 

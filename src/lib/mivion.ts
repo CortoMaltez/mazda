@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "./prisma";
-import { getGeminiCostManager } from "./gemini-cost-manager";
+// Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
 
 // Configuration Mivion
 export const MIVION_CONFIG = {
@@ -101,7 +101,7 @@ class MivionCompetitiveIntelligence {
 
   constructor() {
     this.genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
-    this.costManager = getGeminiCostManager();
+    // Gestionnaire de coûts IA supprimé - remplacé par AIUsageService
     // Initialisation différée pour éviter les erreurs de build
     this.initializeCompetitors().catch(console.error);
   }
@@ -109,7 +109,7 @@ class MivionCompetitiveIntelligence {
   private async initializeCompetitors() {
     try {
     // Charger les données concurrentielles depuis la base
-      const storedCompetitors = await prisma.Competitor.findMany();
+      const storedCompetitors = await prisma.competitor.findMany();
       this.competitors = storedCompetitors.map((c: any) => ({
       id: c.id,
       name: c.name,
@@ -422,7 +422,7 @@ class MivionCompetitiveIntelligence {
   private async saveInsights(insights: CompetitiveInsight[]) {
     try {
     for (const insight of insights) {
-        await prisma.CompetitiveInsight.create({
+        await prisma.competitiveInsight.create({
         data: {
           type: insight.type,
           severity: insight.severity,

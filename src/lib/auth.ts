@@ -1,13 +1,30 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
-import { UserRole } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: [
+            'openid',
+            'email',
+            'profile',
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/drive',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email'
+          ].join(' ')
+        }
+      }
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -51,11 +68,67 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt"
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        // Vérifier si l'utilisateur existe déjà
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! }
+        });
+
+        if (!existingUser) {
+          // Créer un nouvel utilisateur avec le rôle VISITOR par défaut
+          await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name!,
+              password: "", // Pas de mot de passe pour les utilisateurs Google
+              role: "VISITOR"
+            }
+          });
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user, account }) {
       if (user) {
         token.role = user.role;
         token.id = user.id;
       }
+      
+      // Sauvegarder les tokens Google dans la base de données
+      if (account?.provider === "google" && account.access_token) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email! }
+        });
+        
+        if (dbUser) {
+          await prisma.account.upsert({
+            where: {
+              provider_providerAccountId: {
+                provider: "google",
+                providerAccountId: account.providerAccountId
+              }
+            },
+            update: {
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at
+            },
+            create: {
+              userId: dbUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope
+            }
+          });
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {
@@ -70,79 +143,4 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
-
-// Fonctions de vérification des permissions
-export const hasPermission = (userRole: string, requiredRole: string): boolean => {
-  const roleHierarchy = {
-    VISITOR: 0,
-    CLIENT: 1,
-    CONSULTANT: 2,
-    ADMIN: 3
-  };
-
-  return roleHierarchy[userRole as keyof typeof roleHierarchy] >= roleHierarchy[requiredRole as keyof typeof roleHierarchy];
-};
-
-export const requireAuth = (role: string = "CLIENT") => {
-  return (session: any) => {
-    if (!session) return false;
-    return hasPermission(session.user.role, role);
-  };
-};
-
-// Vérification des permissions granulaires pour les consultants
-export const hasConsultantPermission = async (userId: string, permission: string, action: 'read' | 'write' | 'delete' = 'read'): Promise<boolean> => {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: { consultantPermissions: true } as any,
-  });
-
-  if (!user || user.role !== UserRole.CONSULTANT) {
-    return false;
-  }
-
-  const permissions = (user as any).consultantPermissions || [];
-  const permissionRecord = permissions.find((p: any) => p.permission === permission);
-  if (!permissionRecord) {
-    return false;
-  }
-
-  switch (action) {
-    case 'read':
-      return permissionRecord.canRead;
-    case 'write':
-      return permissionRecord.canWrite;
-    case 'delete':
-      return permissionRecord.canDelete;
-    default:
-      return false;
-  }
-};
-
-// Fonctions de vérification des rôles
-export const isVisitor = (session: any) => !session;
-export const isClient = (session: any) => session && hasPermission(session.user.role, "CLIENT");
-export const isConsultant = (session: any) => session && hasPermission(session.user.role, "CONSULTANT");
-export const isAdmin = (session: any) => session && hasPermission(session.user.role, "ADMIN");
-export const isAI = (session: any) => session && (hasPermission(session.user.role, "ADMIN") || hasPermission(session.user.role, "CONSULTANT"));
-
-// Fonction pour vérifier l'accès avec permissions granulaires
-export const canAccess = async (session: any, permission: string, action: 'read' | 'write' | 'delete' = 'read'): Promise<boolean> => {
-  if (!session) return false;
-  
-  // Les admins ont accès à tout
-  if (session.user.role === 'ADMIN') return true;
-  
-  // Les consultants ont des permissions granulaires
-  if (session.user.role === 'CONSULTANT') {
-    return await hasConsultantPermission(session.user.id, permission, action);
-  }
-  
-  // Les clients ont accès basique
-  if (session.user.role === 'CLIENT') {
-    return ['dashboard', 'calculator'].includes(permission);
-  }
-  
-  return false;
 }; 

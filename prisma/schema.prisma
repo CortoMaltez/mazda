@@ -28,6 +28,11 @@ model User {
   facebookAccessToken String?
   facebookConnected Boolean @default(false)
   
+  // AI usage tracking
+  aiTokenUsage Int @default(0)
+  aiLastUsage  DateTime @updatedAt
+  aiMonthlyBudget Int @default(1000000) // 1M tokens par défaut
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -35,10 +40,18 @@ model User {
   companies Company[]
   payments  Payment[]
   documents Document[]
+  clientDocuments ClientDocument[]
   consultations Consultation[]
   supportTickets SupportTicket[]
   llcFormationWorkflows LLCFormationWorkflow[]
   aiAnalyses AIAnalysis[]
+  auditLogs AuditLog[]
+  complianceTasks ComplianceTask[]
+  accounts Account[]
+  sessions Session[]
+  notifications Notification[]
+  apiAccess APIAccess[]
+  webhooks Webhook[]
   
   // Account Manager relations
   managedCompanies Company[] @relation("AccountManager")
@@ -86,6 +99,9 @@ model Company {
   premiumBankAssistance Boolean @default(false)
   trademarkFiling Boolean @default(false)
   
+  // Google Workspace integration
+  googleDriveHubId String? // ID du dossier principal sur Google Drive
+  
   userId      String
   accountManagerId String?
   createdAt   DateTime @default(now())
@@ -98,6 +114,8 @@ model Company {
   payments   Payment[]
   mailItems  MailItem[]
   supportTickets SupportTicket[]
+  llcFormationWorkflows LLCFormationWorkflow[]
+  complianceTasks ComplianceTask[]
 
   @@map("companies")
 }
@@ -122,6 +140,17 @@ model Document {
   company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@map("documents")
+}
+
+model ClientDocument {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  fileName   String
+  storageUrl String   // URL vers le fichier dans Google Cloud Storage ou lien vers Google Drive
+  uploadedAt DateTime @default(now())
+
+  @@map("client_documents")
 }
 
 model Payment {
@@ -205,39 +234,30 @@ model SupportTicket {
 }
 
 model LLCFormationWorkflow {
-  id                    String   @id @default(cuid())
-  clientId              String
-  planId                String
-  status                String   @default("pending") // pending, in_progress, completed, failed
-  steps                 String   // JSON array of workflow steps
-  totalEstimatedTime    Int      // in minutes
-  actualTime            Int?     // in minutes
-  startedAt             DateTime @default(now())
-  completedAt           DateTime?
-  data                  String   // JSON object with formation data
-  documents             String   // JSON array of document URLs
-  ein                   String?
-  bankAccount           String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id          String   @id @default(cuid())
+  userId      String
+  companyId   String?
+  step        String   // current step in the workflow
+  status      String   @default("in_progress") // "in_progress", "completed", "failed"
+  data        String?  // JSON data for the current step
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  client User @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@map("llc_formation_workflows")
 }
 
 model AIAnalysis {
   id          String   @id @default(cuid())
-  serviceId   String
   userId      String
-  input       String   // JSON object with input data
-  output      String   // AI generated response
-  cost        Float    @default(0)
-  tokensUsed  Int      @default(0)
-  status      String   @default("pending") // pending, completed, failed
+  type        String   // "pricing", "competitor", "market"
+  data        String   // JSON analysis data
+  insights    String?  // JSON insights
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -248,11 +268,9 @@ model AIAnalysis {
 model ConsultantPermission {
   id          String   @id @default(cuid())
   consultantId String
-  grantedBy   String   // admin user ID
-  permission  String   // e.g., "dashboard", "admin", "ai", "users", "companies"
-  canRead     Boolean  @default(false)
-  canWrite    Boolean  @default(false)
-  canDelete   Boolean  @default(false)
+  grantedBy   String
+  permissions String   // JSON array of permissions
+  expiresAt   DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -292,7 +310,7 @@ model CompetitiveInsight {
   @@map("competitive_insights")
 }
 
-// TRACKING FINANCIER & ROI
+// TRACKING FINANCIER & ROI - Mise à jour avec les nouveaux modèles
 model AdCampaign {
   id              String   @id @default(cuid())
   platform        String   // 'facebook', 'google', 'linkedin'
@@ -310,7 +328,35 @@ model AdCampaign {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  // Relations
+  creatives AdCreative[]
+  performance CampaignPerformance[]
+
   @@map("ad_campaigns")
+}
+
+model AdCreative {
+  id         String     @id @default(cuid())
+  campaign   AdCampaign @relation(fields: [campaignId], references: [id])
+  campaignId String
+  type       String     // "IMAGE", "VIDEO"
+  storageUrl String     // URL vers le fichier dans le bucket Google Cloud Storage
+  copyText   String?
+  createdAt  DateTime   @default(now())
+
+  @@map("ad_creatives")
+}
+
+model CampaignPerformance {
+  id          String     @id @default(cuid())
+  campaign    AdCampaign @relation(fields: [campaignId], references: [id])
+  campaignId  String
+  date        DateTime
+  impressions Int
+  clicks      Int
+  cost        Float
+
+  @@map("campaign_performance")
 }
 
 model FinancialMetric {
@@ -376,6 +422,145 @@ model AICostTracking {
   createdAt       DateTime @default(now())
 
   @@map("ai_cost_tracking")
+}
+
+// Modèles NextAuth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// Tâches de Conformité Intelligentes
+model ComplianceTask {
+  id          String   @id @default(cuid())
+  userId      String
+  companyId   String?
+  name        String
+  category    String   // "STATE_REPORT", "STATE_TAX", "LOCAL_COMPLIANCE", "INDUSTRY_SPECIFIC", "EMPLOYMENT", "DATA_PRIVACY"
+  description String
+  status      String   @default("PENDING") // "PENDING", "IN_PROGRESS", "COMPLETED", "OVERDUE"
+  priority    String   @default("MEDIUM") // "LOW", "MEDIUM", "HIGH", "CRITICAL"
+  dueDate     DateTime?
+  completedAt DateTime?
+  estimatedFee String?
+  feeNotes    String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("compliance_tasks")
+}
+
+// Journal d'Audit pour la Tour de Contrôle
+model AuditLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId    String
+  userEmail String
+  action    String
+  details   Json?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}
+
+// Système de Notifications
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // info, warning, error, success
+  category  String   // compliance, payment, system, ai, security
+  priority  String   // low, medium, high, urgent
+  title     String
+  message   String
+  actionText String?
+  actionUrl String?
+  metadata  String?  // JSON string
+  read      Boolean  @default(false)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// API Publique
+model APIAccess {
+  id          String   @id @default(cuid())
+  userId      String
+  apiKey      String   @unique
+  name        String
+  permissions String   // JSON string of allowed actions
+  rateLimit   Int      @default(1000) // requests per hour
+  isActive    Boolean  @default(true)
+  lastUsed    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_access")
+}
+
+// Webhooks
+model Webhook {
+  id        String   @id @default(cuid())
+  userId    String
+  url       String
+  events    String   // JSON string of event types
+  secret    String   // for signature verification
+  isActive  Boolean  @default(true)
+  lastTriggered DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("webhooks")
 }
 
 enum UserRole {
